@@ -38,6 +38,7 @@ bool Map::isConnectedGraph() {
     visited[0]=1;
     while(visit.size()!=0){
         vector<Territory*> neighbours=visit.front()->getNeighbours();
+        visit.insert(visit.end(), neighbours.begin(), neighbours.end());
         for(int i=0; i<neighbours.size(); i++){
             bool containFlag=false;
             bool checkedFlag=false;
@@ -56,7 +57,7 @@ bool Map::isConnectedGraph() {
                 visit.push_back(neighbours[i]);
             }
         }
-        neighbours.erase(territories.begin());
+        visit.erase(visit.begin());
     }
     for (int i=0; i<this->territories.size(); i++){
         if(!visited[i]){
@@ -224,16 +225,17 @@ bool Continent::isConnectedGraph() {
     visited[0]=1;
     while(visit.size()!=0){
         vector<Territory*> neighbours=visit.front()->getNeighbours();
+        visit.insert(visit.end(), neighbours.begin(), neighbours.end());
         for(int i=0; i<neighbours.size(); i++){
             bool containFlag=false;
             bool checkedFlag=false;
             for(int j=0; j<neighbours.size(); j++){
-                if(neighbours[i]->getName()==neighbours[j]->getName()){
+                if(neighbours[i]==neighbours[j]){
                     containFlag=true;
                 }
             }
             for(int j=0; j<this->territories.size(); j++){
-                if(neighbours[i]->getName()==territories[j]->getName()){
+                if(neighbours[i]==territories[j]){
                     checkedFlag==visited[j];
                 }
                 visited[j]=true;
@@ -242,7 +244,7 @@ bool Continent::isConnectedGraph() {
                 visit.push_back(neighbours[i]);
             }
         }
-        neighbours.erase(territories.begin());
+        visit.erase(visit.begin());
     }
     for (int i=0; i<this->territories.size(); i++){
         if(!visited[i]){
