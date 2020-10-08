@@ -20,6 +20,16 @@ vector<Territory*> Map::getTerritories() {
     return this->territories;
 }
 
+Continent* Map::getContinentByIndex(int indexOfContinent, vector<string> continentsList){
+    Continent* temp = new Continent(continentsList[indexOfContinent]) 
+    return temp;
+}
+
+Territory* Map::getTerritoryByIndex(int indexOfTerritory, vector<string> territoryList) {
+    Territory* temp = new Territory(territoryList[indexOfTerritory]);
+    return temp;
+}
+
 void Map::addContinent(Continent *continent) {
     this->continents.push_back(continent);
 }
@@ -111,6 +121,10 @@ void Map::print() {
 }
 
 Territory::Territory() {}
+
+Territory::Territory(string name) {
+    this->name = new string(name);
+}
 
 Territory::Territory(string name, Continent *continent) {
     this->name=new string(name);

@@ -18,6 +18,8 @@ public:
     ~Map();
     vector<Continent*> getContinents();
     vector<Territory*> getTerritories();
+    Continent* getContinentsByIndex(int indexOfContinent, vector<string> continentsList);
+    Territory* getTerritoryByIndex(int indexOfTerritory, vector<string> territoryList);
     void addContinent(Continent* continent);
     void addTerritory(Territory* territory);
     void print();
@@ -34,6 +36,7 @@ private:
     Continent* continent;
 public:
     Territory();
+    Territory(string name);
     Territory(string name, Continent* continent);
     Territory(Territory* territory);
     ~Territory();
