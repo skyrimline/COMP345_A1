@@ -1,7 +1,11 @@
+#ifndef PLAYER_H
+#define PLAYER_H
+
 #include "Map.h"
 #include "Cards.h"
 #include "Orders.h"
 #include <iostream>
+#include <vector>
 using namespace std;
 
 class Player {
@@ -20,3 +24,5 @@ private:
     vector<Card*> cards;
     vector<Order*> orders;
 };
+
+#endif

@@ -1,4 +1,9 @@
+#ifndef PLAYER_H
 #include "Player.h"
+#endif
+
+#include <iostream>
+#include <vector>
 using namespace std;
 
 Player::Player() {
