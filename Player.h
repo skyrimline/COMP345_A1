@@ -18,6 +18,9 @@ public:
     vector<Territory*> toAttack();
     vector<Territory*> toDefend();
     void issueOrder();
+    
+    string getName();
+    
 private:
     string name;
     vector<Territory*> terrs;
