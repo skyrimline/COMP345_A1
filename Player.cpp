@@ -69,3 +69,8 @@ string Player::to_String() {
     pInfo += "\n";
     return pInfo;
 }
+
+string Player::getName()
+{
+    return name;
+}
