@@ -9,7 +9,7 @@ class Player {
 public:
     Player();       // default constructor
     Player(string);
-    Player(Player& p);
+    Player(Player&);
     Player(Player&, string);        // copy constructor
     Player& operator=(Player&);      // assignment operator
     friend ostream& operator<<(ostream&, const Player&);           // stream insertion operator
