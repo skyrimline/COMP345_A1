@@ -28,7 +28,7 @@ Player& Player::operator=(Player& p) {
     return pCopy;
 }
 
-ostream& operator<<(ostream &out, const Player &p) {
+ostream& operator<<(ostream &out, Player &p) {
     out << p.to_String();
     out << endl;
     return out; 
@@ -59,14 +59,14 @@ void Player::issueOrder(string ){
 
 string Player::to_String() {
     string pInfo = "";
-    pInfo += "Player " + *this.getName() + "\'s info: \n";
+    pInfo += "Player " + this->getName() + "\'s info: \n";
     pInfo += "\tTerritory owned: \n";
-    for(vector<Territory>::iterator it = this->terrs.begin(); it != this->terrs.end(); ++i) {
-        pInfo +=  it->to_String() + ", ";
+    for(vector<Territory*>::iterator it = this->terrs.begin(); it != this->terrs.end(); ++it) {
+        pInfo +=  (*it)->getName() + ", ";
     }
     pInfo += "\n\tCards owned: \n";
-    for(vector<Card>::iterator it = this->cards.begin(); it != this->cards.end(); ++i) {
-        pInfo += it->to_String() + ", ";
+    for(vector<Card*>::iterator it = this->cards.begin(); it != this->cards.end(); ++it) {
+        pInfo += (*it)->getType() + ", ";
     }
     pInfo += "\n";
     return pInfo;

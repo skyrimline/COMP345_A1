@@ -17,6 +17,7 @@ public:
     vector<Territory*> toDefend();
     void issueOrder(string);
     string getName();
+    string to_String();
     
 private:
     string name;
