@@ -270,7 +270,7 @@ bool Continent::isConnectedGraph() {
 
 bool Continent::contains(Territory *territory) {
     for(int i=0; i<territories.size(); i++){
-        if(territories[i]==territory-){
+        if(territories[i]==territory){
             return true;
         }
     }
