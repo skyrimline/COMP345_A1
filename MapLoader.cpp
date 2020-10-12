@@ -31,7 +31,7 @@ Map MapLoader::readMap(string mapFile) {
 				}
 				territoryList.push_back(LSplit[1]);
 				int continentIndex = stoi(LSplit[2]) - 1;
-				map.addTerritory(new Territory(LSplit[1], map.getContinentsByIndex(continentIndex, continentsList)));
+				map.addTerritory(new Territory(LSplit[1], map.getContinentByIndex(continentIndex, continentsList)));
 			}
 			//moving to Borders
 			while (getline(dom, L) && L != "[borders]\r") {}

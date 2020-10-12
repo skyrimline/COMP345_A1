@@ -18,7 +18,7 @@ public:
     ~Map();
     vector<Continent*> getContinents();
     vector<Territory*> getTerritories();
-    Continent* getContinentsByIndex(int indexOfContinent, vector<string> continentsList);
+    Continent* getContinentByIndex(int indexOfContinent, vector<string> continentsList);
     Territory* getTerritoryByIndex(int indexOfTerritory, vector<string> territoryList);
     void addContinent(Continent* continent);
     void addTerritory(Territory* territory);

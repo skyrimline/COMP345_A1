@@ -21,7 +21,7 @@ vector<Territory*> Map::getTerritories() {
 }
 
 Continent* Map::getContinentByIndex(int indexOfContinent, vector<string> continentsList){
-    Continent* temp = new Continent(continentsList[indexOfContinent]) 
+    Continent* temp = new Continent(continentsList[indexOfContinent]);
     return temp;
 }
 
