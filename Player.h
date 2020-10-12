@@ -9,13 +9,13 @@ class Player {
 public:
     Player();       // default constructor
     Player(string);
+    Player(Player& p);
     Player(Player&, string);        // copy constructor
     Player& operator=(Player&);      // assignment operator
     friend ostream& operator<<(ostream&, const Player&);           // stream insertion operator
     vector<Territory*> toAttack();
     vector<Territory*> toDefend();
-    void issueOrder();
-    
+    void issueOrder(string);
     string getName();
     
 private:

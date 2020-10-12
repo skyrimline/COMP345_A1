@@ -7,6 +7,10 @@ Player::Player() {
     this->name = "";
 }
 
+Player::Player(Player& p) {
+    this->name = p.name;
+}
+
 Player::Player(string pName) {
     this->name = pName;
 }
@@ -18,8 +22,9 @@ Player::Player(Player& p, string pName) {
     this->name = pName;
 }
 
-Player& Player::operator=(Player& p, string pName) {
-    Player& pCopy = new Player(p, pName);
+Player& Player::operator=(Player& p) {
+    Player* p1 = new Player(p);
+    Player& pCopy = *p1;
     return pCopy;
 }
 
@@ -32,7 +37,7 @@ ostream& operator<<(ostream &out, const Player &p) {
 vector<Territory*> Player::toAttack() {
     // for now only arbitary territory list returned
     vector<Territory*> terrAttack;
-    for (vector<Territory*>::iterator it = terrs.begin(); it != terrs.ends(); ++it) {
+    for (vector<Territory*>::iterator it = terrs.begin(); it != terrs.end(); ++it) {
         terrAttack.push_back(*it);
     }
     return terrAttack;
@@ -41,7 +46,7 @@ vector<Territory*> Player::toAttack() {
 vector<Territory*> Player::toDefend() {
     // for now only arbitary territory list returned
     vector<Territory*> terrDefend;
-    for (vector<Territory*>::iterator it = terrs.begin(); it != terrs.ends(); ++it) {
+    for (vector<Territory*>::iterator it = terrs.begin(); it != terrs.end(); ++it) {
         terrDefend.push_back(*it);
     }
     return terrDefend;
@@ -54,7 +59,7 @@ void Player::issueOrder(string ){
 
 string Player::to_String() {
     string pInfo = "";
-    pInfo += "Player " + this->name + "\'s info: \n";
+    pInfo += "Player " + *this.getName() + "\'s info: \n";
     pInfo += "\tTerritory owned: \n";
     for(vector<Territory>::iterator it = this->terrs.begin(); it != this->terrs.end(); ++i) {
         pInfo +=  it->to_String() + ", ";
