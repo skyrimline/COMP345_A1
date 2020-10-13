@@ -49,7 +49,6 @@ Map MapLoader::readMap(string mapFile) {
 				}
 			}
 			if (map.validate()) {
-				map.print();
 				return map;
 			}
 			else {
