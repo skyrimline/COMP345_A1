@@ -128,7 +128,7 @@ Territory::Territory(string name) {
 
 Territory::Territory(string name, Continent *continent) {
     this->name=new string(name);
-    this->setContinent(continent);
+    this->continent=continent;
     continent->addTerritory(this);
 }
 
@@ -180,13 +180,16 @@ void Territory::setName(string name) {
 
 void Territory::setContinent(Continent *continent) {
     Continent* oldContinent=this->continent;
-    oldContinent->deleteTerritory(this);
+    if(oldContinent!=NULL){
+        oldContinent->deleteTerritory(this);
+    }
     this->continent=continent;
     continent->addTerritory(this);
 }
 
 void Territory::addNeighbour(Territory *neighbour) {
     this->neighbours.push_back(neighbour);
+    neighbour->neighbours.push_back(this);
 }
 
 Continent::Continent() {}
@@ -217,8 +220,12 @@ void Continent::setName(string name) {
 }
 
 void Continent::addTerritory(Territory* territory) {
-    territory->setContinent(this);
-    this->territories.push_back(territory);
+    if(territory->getContinent()!=this){
+        territory->setContinent(this);
+    }
+    else{
+        this->territories.push_back(territory);
+    }
 }
 
 void Continent::deleteTerritory(Territory *territory) {
@@ -278,8 +285,8 @@ bool Continent::contains(Territory *territory) {
 }
 
 void Continent::print() {
-    cout<<"Territories in "<<this->name<<":"<<endl;
+    cout<<"Territories in "<<*(this->name)<<":"<<endl;
     for (int i=0; i<this->territories.size(); i++){
-        cout<<"  "<<this->territories[i]->getName()<<endl;
+        cout<<"  "<<i+1<<". "<<this->territories[i]->getName()<<endl;
     }
 }
