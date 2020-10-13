@@ -59,7 +59,7 @@ bool Map::isConnectedGraph() {
             }
             for(int j=0; j<this->territories.size(); j++){
                 if(neighbours[i]==territories[j]){
-                    checkedFlag==visited[j];
+                    checkedFlag=visited[j];
                 }
                 visited[j]=true;
             }
@@ -250,7 +250,7 @@ bool Continent::isConnectedGraph() {
             }
             for(int j=0; j<this->territories.size(); j++){
                 if(neighbours[i]==territories[j]){
-                    checkedFlag==visited[j];
+                    checkedFlag=visited[j];
                 }
                 visited[j]=true;
             }

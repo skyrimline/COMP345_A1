@@ -1,5 +1,4 @@
 #pragma once
-
 #include <iostream>
 #include <string>
 #include <vector>
@@ -41,13 +40,6 @@ public:
 
 private:
 	vector<Card>* cardsVector;
-};
-
-class Player
-{
-public:
-	string getName() { return ""; }
-
 };
 
 class Hand
