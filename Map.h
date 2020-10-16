@@ -1,5 +1,4 @@
-#ifndef A1_MAP_H
-#define A1_MAP_H
+#pragma once
 #include <iostream>
 #include <vector>
 #include "Player.h"
@@ -30,7 +29,7 @@ private:
     string* name;
     Player* owner;
     vector<Territory*> neighbours;
-    int numberOfArmies;
+    int* numberOfArmies;
     Continent* continent;
 public:
     Territory();
@@ -41,7 +40,7 @@ public:
     string getName();
     Player getOwner();
     vector<Territory*> getNeighbours();
-    int getNumberOfArmies();
+    int* getNumberOfArmies();
     Continent* getContinent();
     void setName(string name);
     void setOwner(Player* owner);
@@ -69,6 +68,3 @@ public:
     bool contains(Territory* territory);
     void print();
 };
-
-
-#endif //A1_MAP_H

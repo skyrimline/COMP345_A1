@@ -33,11 +33,14 @@ void Map::addTerritory(Territory *territory) {
 }
 
 bool Map::isConnectedGraph() {
+    //used to record if a territory is visited
     vector<bool> visited;
     for (int i = 0; i < this->territories.size(); i++) {
         visited.push_back(false);
     }
+    //a queue for territories that are waiting to be visited
     vector<Territory *> visit;
+    //put the first territory into the queue
     visit.push_back(this->territories[0]);
     while (visit.size() != 0) {
         Territory *current = visit.front();
@@ -46,23 +49,27 @@ bool Map::isConnectedGraph() {
             Territory *currentNeighbour = neighbours[i];
             bool containFlag = false;
             bool checkedFlag = false;
+            //check if the current neighbour is already in the queue
             for (int j = 0; j < visit.size(); j++) {
                 if (currentNeighbour == visit[j]) {
                     containFlag = true;
                     break;
                 }
             }
+            //check if the current neighbour is already visited
             for (int j = 0; j < this->territories.size(); j++) {
                 if (currentNeighbour == territories[j]) {
                     checkedFlag = visited[j];
                     break;
                 }
             }
+            //if the current neighbour is neither in the queue nor visited, put it into the queue
             if (!containFlag && !checkedFlag) {
                 visit.push_back(currentNeighbour);
 
             }
         }
+        //mark the status of current territory "visited"
         for (int j = 0; j < this->territories.size(); j++) {
             if (current == territories[j]) {
                 visited[j] = true;
@@ -71,6 +78,7 @@ bool Map::isConnectedGraph() {
         }
         visit.erase(visit.begin());
     }
+    //if not all the territories are visited, return false
     for (int i = 0; i < this->territories.size(); i++) {
         if (!visited[i]) {
             return false;
@@ -148,7 +156,7 @@ string Territory::getName() {
     return *name;
 }
 
-int Territory::getNumberOfArmies() {
+int* Territory::getNumberOfArmies() {
     return numberOfArmies;
 }
 
@@ -165,7 +173,7 @@ vector<Territory *> Territory::getNeighbours() {
 }
 
 void Territory::setNumberOfArmies(int numberOfArmies) {
-    this->numberOfArmies = numberOfArmies;
+    this->numberOfArmies = new int(numberOfArmies);
 }
 
 void Territory::setOwner(Player *owner) {
@@ -265,6 +273,8 @@ bool Continent::isConnectedGraph() {
             bool containFlag = false;
             bool checkedFlag = false;
             bool localFlag = false;
+            //check if the current neighbour is on the same continent with current territory
+            //if not, ignore it
             if (currentNeighbour->getContinent() == visit.front()->getContinent()) {
                 localFlag = true;
                 for (int j = 0; j < visit.size(); j++) {
