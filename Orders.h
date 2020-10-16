@@ -1,94 +1,128 @@
 #pragma once
 #include <iostream>
 #include <list>
+#include <string>
 using namespace std;
 
-class OrderList
-{
-	static list <Order> order;
-public:
-	OrderList() {
-	};
-	OrderList(OrderList &OrderList);
-	OrderList& operator = (const OrderList &p);
-	void move(Order);
-	void remove(Order);
-};
-class Order : public OrderList 
+
+class Order
 {
 public:
 	Order();
-	Order(Order &Order, string oName);
-	Order& operator = (const Order &p);
-	bool validate(string);
-	void execute();
-
+	Order(string name);
+	Order(const Order& order);
+	Order& operator << (const Order& order);
+	bool validate(Order);
+	void execute(Order);
+	virtual void sticker();
+	
 private:
 	string name;
 };
 
-class deploy : public Order 
+class OrderList
 {
+	
 public:
-	deploy();
-	deploy(deploy &deploy);
-	deploy& operator = (const deploy &p);
+	list <Order> orderlist;
+	OrderList();
+	OrderList(string name);
+	OrderList(const OrderList& OrderList);
+	OrderList& operator << (const OrderList &p);
+	void move(Order& p_order);
+	void remove(Order& p_order);
 
 private:
 	string name;
+	
 };
 
-class advance : public Order 
+class Deploy : public Order 
 {
 public:
-	advance();
-	advance(advance &advance);
-	advance& operator = (const advance &p);
-
+	Deploy();
+	Deploy(string name);
+	Deploy(const Deploy& Deploy);
+	Deploy& operator << (const Deploy &p);
+	bool validate(Deploy);
+	void execute(Deploy);
+	void sticker();
 private:
 	string name;
+	
+};
+
+class Advance : public Order 
+{
+public:
+	Advance();
+	Advance(string name);
+	Advance(const Advance& Advance);
+	Advance& operator << (const Advance &p);
+	bool validate(Advance);
+	void execute(Advance);
+	void sticker();
+private:
+	string name;
+	
 };	
 
-class bomb : public Order 
+class Bomb : public Order 
 {
 public:
-	bomb();
-	bomb(bomb &bomb);
-	bomb& operator = (const bomb &p);
-
+	Bomb();
+	Bomb(string name);
+	Bomb(const Bomb& Bomb);
+	Bomb& operator = (const Bomb &p);
+	bool validate(Bomb);
+	void execute(Bomb);
+	void sticker();
 private:
 	string name;
+	
 };
 
-class blockade : public Order 
+class Blockade : public Order 
 {
 public:
-	blockade();
-	blockade(blockade &blockade);
-	blockade& operator = (const blockade &p);
-
+	Blockade();
+	Blockade(string name);
+	Blockade(const Blockade& Blockade);
+	Blockade& operator = (const Blockade &p);
+	bool validate(Blockade);
+	void execute(Blockade);
+	void sticker();
 private:
 	string name;
+	
 };
 
-class airlift : public Order 
+class Airlift : public Order 
 {
 public:
-	airlift();
-	airlift(airlift &airlift);
-	airlift& operator = (const airlift &p);
-
+	Airlift();
+	Airlift(string name);
+	Airlift(const Airlift& Airlift);
+	Airlift& operator = (const Airlift &p);
+	bool validate(Airlift);
+	void execute(Airlift);
+	void sticker();
 private:
 	string name;
+	
 };
 
-class negotiate : public Order 
+class Negotiate : public Order 
 {
 public:
-	negotiate();
-	negotiate(negotiate &negotiate);
-	negotiate& operator = (const negotiate &p);
-
+	Negotiate();
+	Negotiate(string name);
+	Negotiate(const Negotiate& Negotiate);
+	Negotiate& operator = (const Negotiate &p);
+	bool validate(Negotiate);
+	void execute(Negotiate);
+	void sticker();
 private:
 	string name;
+	
 };
