@@ -1,38 +1,29 @@
 #include "Map.h"
 #include <vector>
 #include <iostream>
+
 using namespace std;
 
 Map::Map() {}
 
 Map::Map(Map *map) {
-    this->continents=map->continents;
-    this->territories=map->territories;
+    this->continents = map->continents;
+    this->territories = map->territories;
 }
 
 Map::~Map() {}
 
-vector<Continent*> Map::getContinents() {
+vector<Continent *> Map::getContinents() {
     return this->continents;
 }
 
-vector<Territory*> Map::getTerritories() {
+vector<Territory *> Map::getTerritories() {
     return this->territories;
-}
-
-Continent* Map::getContinentByIndex(int indexOfContinent, vector<string> continentsList){
-    Continent* temp = new Continent(continentsList[indexOfContinent]);
-    return temp;
-}
-
-Territory* Map::getTerritoryByIndex(int indexOfTerritory, vector<string> territoryList) {
-    Territory* temp = new Territory(territoryList[indexOfTerritory]);
-    return temp;
 }
 
 void Map::addContinent(Continent *continent) {
     this->continents.push_back(continent);
-    for(int i=0; i<continent->getTerritories().size(); i++){
+    for (int i = 0; i < continent->getTerritories().size(); i++) {
         this->territories.push_back(continent->getTerritories()[i]);
     }
 }
@@ -43,36 +34,45 @@ void Map::addTerritory(Territory *territory) {
 
 bool Map::isConnectedGraph() {
     vector<bool> visited;
-    for (int i=0; i<this->territories.size(); i++){
+    for (int i = 0; i < this->territories.size(); i++) {
         visited.push_back(false);
     }
-    vector<Territory*> visit;
+    vector<Territory *> visit;
     visit.push_back(this->territories[0]);
-    visited[0]=true;
-    while(visit.size()!=0){
-        vector<Territory*> neighbours=visit.front()->getNeighbours();
-        for(int i=0; i<neighbours.size(); i++){
-            bool containFlag=false;
-            bool checkedFlag=false;
-            for(int j=0; j<neighbours.size(); j++){
-                if(neighbours[i]==neighbours[j]){
-                    containFlag=true;
+    while (visit.size() != 0) {
+        Territory *current = visit.front();
+        vector<Territory *> neighbours = current->getNeighbours();
+        for (int i = 0; i < neighbours.size(); i++) {
+            Territory *currentNeighbour = neighbours[i];
+            bool containFlag = false;
+            bool checkedFlag = false;
+            for (int j = 0; j < visit.size(); j++) {
+                if (currentNeighbour == visit[j]) {
+                    containFlag = true;
+                    break;
                 }
             }
-            for(int j=0; j<this->territories.size(); j++){
-                if(neighbours[i]==territories[j]){
-                    checkedFlag=visited[j];
+            for (int j = 0; j < this->territories.size(); j++) {
+                if (currentNeighbour == territories[j]) {
+                    checkedFlag = visited[j];
+                    break;
                 }
-                visited[j]=true;
             }
-            if(!containFlag&&!checkedFlag){
-                visit.push_back(neighbours[i]);
+            if (!containFlag && !checkedFlag) {
+                visit.push_back(currentNeighbour);
+
+            }
+        }
+        for (int j = 0; j < this->territories.size(); j++) {
+            if (current == territories[j]) {
+                visited[j] = true;
+                break;
             }
         }
         visit.erase(visit.begin());
     }
-    for (int i=0; i<this->territories.size(); i++){
-        if(!visited[i]){
+    for (int i = 0; i < this->territories.size(); i++) {
+        if (!visited[i]) {
             return false;
         }
     }
@@ -81,43 +81,43 @@ bool Map::isConnectedGraph() {
 
 bool Map::validate() {
     //checks if the map is a connected graph
-    bool mapFlag=this->isConnectedGraph();
+    bool mapFlag = this->isConnectedGraph();
     //checks if the continents are connected graphs
-    bool continentsFlag=true;
-    for(int i=0; i<this->continents.size(); i++){
-        if(!continents[i]->isConnectedGraph()){
-            continentsFlag=false;
+    bool continentsFlag = true;
+    for (int i = 0; i < this->continents.size(); i++) {
+        if (!continents[i]->isConnectedGraph()) {
+            continentsFlag = false;
             break;
         }
     }
     //checks if every territory belongs to one continent
-    bool belongFlag=true;
-    for(int i=0; i<this->territories.size(); i++){
-        if(territories[i]->getContinent() == NULL){
-            belongFlag=false;
+    bool belongFlag = true;
+    for (int i = 0; i < this->territories.size(); i++) {
+        if (territories[i]->getContinent() == NULL) {
+            belongFlag = false;
             break;
         }
-        if(!territories[i]->getContinent()->contains(territories[i])){
-            belongFlag=false;
+        if (!territories[i]->getContinent()->contains(territories[i])) {
+            belongFlag = false;
             break;
         }
     }
     //checks if each territory belongs to only one continent
-    bool uniqueFlag=true;
-    int allTerritories=0;
-    for(int i=0; i<this->continents.size();i++){
-        allTerritories+=this->continents[i]->getTerritories().size();
+    bool uniqueFlag = true;
+    int allTerritories = 0;
+    for (int i = 0; i < this->continents.size(); i++) {
+        allTerritories += this->continents[i]->getTerritories().size();
     }
-    if(allTerritories!=this->territories.size()){
-        uniqueFlag=false;
+    if (allTerritories != this->territories.size()) {
+        uniqueFlag = false;
     }
-    return mapFlag&&continentsFlag&&uniqueFlag&&belongFlag;
+    return mapFlag && continentsFlag && uniqueFlag && belongFlag;
 }
 
 
 void Map::print() {
-    cout<<"Information for the map:"<<endl;
-    for(int i=0; i<this->continents.size(); i++){
+    cout << "Information for the map:" << endl;
+    for (int i = 0; i < this->continents.size(); i++) {
         this->continents[i]->print();
     }
 }
@@ -129,17 +129,17 @@ Territory::Territory(string name) {
 }
 
 Territory::Territory(string name, Continent *continent) {
-    this->name=new string(name);
-    this->continent=continent;
+    this->name = new string(name);
+    this->continent = continent;
     continent->addTerritory(this);
 }
 
 Territory::Territory(Territory *territory) {
-    this->name=territory->name;
-    this->continent=territory->continent;
-    this->neighbours=territory->neighbours;
-    this->owner=territory->owner;
-    this->numberOfArmies=territory->numberOfArmies;
+    this->name = territory->name;
+    this->continent = territory->continent;
+    this->neighbours = territory->neighbours;
+    this->owner = territory->owner;
+    this->numberOfArmies = territory->numberOfArmies;
 }
 
 Territory::~Territory() {}
@@ -156,53 +156,66 @@ Player Territory::getOwner() {
     return *owner;
 }
 
-Continent* Territory::getContinent() {
+Continent *Territory::getContinent() {
     return continent;
 }
 
-vector<Territory*> Territory::getNeighbours() {
+vector<Territory *> Territory::getNeighbours() {
     return neighbours;
 }
 
 void Territory::setNumberOfArmies(int numberOfArmies) {
-    this->numberOfArmies=numberOfArmies;
+    this->numberOfArmies = numberOfArmies;
 }
 
 void Territory::setOwner(Player *owner) {
-    Player* oldOwner=this->owner;
-    this->owner=owner;
+    Player *oldOwner = this->owner;
+    this->owner = owner;
     delete oldOwner;
 }
 
 void Territory::setName(string name) {
-    string* oldName=this->name;
-    this->name=new string(name);
+    string *oldName = this->name;
+    this->name = new string(name);
     delete oldName;
 }
 
 void Territory::setContinent(Continent *continent) {
-    Continent* oldContinent=this->continent;
-    if(oldContinent!=NULL){
+    Continent *oldContinent = this->continent;
+    if (oldContinent != NULL) {
         oldContinent->deleteTerritory(this);
     }
-    this->continent=continent;
+    this->continent = continent;
     continent->addTerritory(this);
 }
 
 void Territory::addNeighbour(Territory *neighbour) {
-    this->neighbours.push_back(neighbour);
-    neighbour->neighbours.push_back(this);
+    if (!this->isNeighbour(neighbour)) {
+        this->neighbours.push_back(neighbour);
+    }
+    if (!neighbour->isNeighbour(this)) {
+        neighbour->neighbours.push_back(this);
+    }
+}
+
+bool Territory::isNeighbour(Territory *neighbour) {
+    for (int i = 0; i < this->getNeighbours().size(); i++) {
+        if (this->getNeighbours()[i] == neighbour) {
+            return true;
+        }
+    }
+    return false;
 }
 
 Continent::Continent() {}
 
 Continent::Continent(string name) {
-    this->name=new string(name);
+    this->name = new string(name);
 }
 
 Continent::Continent(Continent *continent) {
-    this->name=continent->name;
-    this->territories=continent->territories;
+    this->name = continent->name;
+    this->territories = continent->territories;
 }
 
 Continent::~Continent() {}
@@ -211,69 +224,76 @@ string Continent::getName() {
     return *name;
 }
 
-vector<Territory*> Continent::getTerritories() {
+vector<Territory *> Continent::getTerritories() {
     return territories;
 }
 
 void Continent::setName(string name) {
-    string* oldName=this->name;
-    this->name=new string(name);
+    string *oldName = this->name;
+    this->name = new string(name);
     delete oldName;
 }
 
-void Continent::addTerritory(Territory* territory) {
-    if(territory->getContinent()!=this){
+void Continent::addTerritory(Territory *territory) {
+    if (territory->getContinent() != this) {
         territory->setContinent(this);
-    }
-    else{
+    } else {
         this->territories.push_back(territory);
     }
 }
 
 void Continent::deleteTerritory(Territory *territory) {
-    for(int i=0; i<this->territories.size(); i++){
-        if(territories[i]->getName()==territory->getName()){
-            this->territories.erase(territories.begin()+i);
+    for (int i = 0; i < this->territories.size(); i++) {
+        if (territories[i]->getName() == territory->getName()) {
+            this->territories.erase(territories.begin() + i);
         }
     }
 }
 
 bool Continent::isConnectedGraph() {
     vector<bool> visited;
-    for (int i=0; i<this->territories.size(); i++){
+    for (int i = 0; i < this->territories.size(); i++) {
         visited.push_back(false);
     }
-    vector<Territory*> visit;
+    vector<Territory *> visit;
     visit.push_back(this->territories[0]);
-    visited[0]=true;
-    while(visit.size()!=0){
-        vector<Territory*> neighbours=visit.front()->getNeighbours();
-        for(int i=0; i<neighbours.size(); i++){
-            bool containFlag=false;
-            bool checkedFlag=false;
-            bool localFlag=false;
-            if(neighbours[i]->getContinent()==visit.front()->getContinent()){
-                localFlag=true;
-                for(int j=0; j<neighbours.size(); j++){
-                    if(neighbours[i]==neighbours[j]){
-                        containFlag=true;
+    while (visit.size() != 0) {
+        Territory *current = visit.front();
+        vector<Territory *> neighbours = current->getNeighbours();
+        for (int i = 0; i < neighbours.size(); i++) {
+            Territory *currentNeighbour = neighbours[i];
+            bool containFlag = false;
+            bool checkedFlag = false;
+            bool localFlag = false;
+            if (currentNeighbour->getContinent() == visit.front()->getContinent()) {
+                localFlag = true;
+                for (int j = 0; j < visit.size(); j++) {
+                    if (currentNeighbour == visit[j]) {
+                        containFlag = true;
+                        break;
                     }
                 }
-                for(int j=0; j<this->territories.size(); j++){
-                    if(neighbours[i]==territories[j]){
-                        checkedFlag=visited[j];
+                for (int j = 0; j < this->territories.size(); j++) {
+                    if (currentNeighbour == territories[j]) {
+                        checkedFlag = visited[j];
+                        break;
                     }
-                    visited[j]=true;
                 }
             }
-            if(!containFlag&&!checkedFlag&&localFlag){
-                visit.push_back(neighbours[i]);
+            if (!containFlag && !checkedFlag && localFlag) {
+                visit.push_back(currentNeighbour);
+            }
+        }
+        for (int j = 0; j < this->territories.size(); j++) {
+            if (current == territories[j]) {
+                visited[j] = true;
+                break;
             }
         }
         visit.erase(visit.begin());
     }
-    for (int i=0; i<this->territories.size(); i++){
-        if(!visited[i]){
+    for (int i = 0; i < this->territories.size(); i++) {
+        if (!visited[i]) {
             return false;
         }
     }
@@ -281,8 +301,8 @@ bool Continent::isConnectedGraph() {
 }
 
 bool Continent::contains(Territory *territory) {
-    for(int i=0; i<territories.size(); i++){
-        if(territories[i]==territory){
+    for (int i = 0; i < territories.size(); i++) {
+        if (territories[i] == territory) {
             return true;
         }
     }
@@ -290,8 +310,8 @@ bool Continent::contains(Territory *territory) {
 }
 
 void Continent::print() {
-    cout<<"Territories in "<<*(this->name)<<":"<<endl;
-    for (int i=0; i<this->territories.size(); i++){
-        cout<<"  "<<i+1<<". "<<this->territories[i]->getName()<<endl;
+    cout << "Territories in " << *(this->name) << ":" << endl;
+    for (int i = 0; i < this->territories.size(); i++) {
+        cout << "  " << i + 1 << ". " << this->territories[i]->getName() << endl;
     }
 }

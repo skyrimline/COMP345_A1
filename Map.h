@@ -18,8 +18,6 @@ public:
     ~Map();
     vector<Continent*> getContinents();
     vector<Territory*> getTerritories();
-    Continent* getContinentByIndex(int indexOfContinent, vector<string> continentsList);
-    Territory* getTerritoryByIndex(int indexOfTerritory, vector<string> territoryList);
     void addContinent(Continent* continent);
     void addTerritory(Territory* territory);
     void print();
@@ -50,6 +48,7 @@ public:
     void setNumberOfArmies(int numberOfArmies);
     void setContinent(Continent* continent);
     void addNeighbour(Territory* neighbour);
+    bool isNeighbour(Territory* neighbour);
 };
 
 class Continent{
