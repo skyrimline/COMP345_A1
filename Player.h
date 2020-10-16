@@ -1,8 +1,6 @@
 #include "Map.h"
 #include "Cards.h"
 #include "Orders.h"
-#include <iostream>
-#include <vector>
 using namespace std;
 
 class Player {
