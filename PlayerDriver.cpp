@@ -1,4 +1,4 @@
-#include "Map.h"
+#include "Player.h"
 
 int main() {
     Player* Player1 = new Player("John");
