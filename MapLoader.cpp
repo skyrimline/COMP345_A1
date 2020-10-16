@@ -10,12 +10,15 @@ Map MapLoader::readMap(string mapFile) {
 		try {
 			Map map;
 			ifstream file(mapFile);
+			vector <string> continentsList;
+			vector<string> territoryList;
 			string str;
 			//moving to continents
 			while (getline(file, str) && str != "[continents]") {}
 			while (getline(file, str) && !str.empty()) {
-				string continent = str.substr(0, str.find(" "));//get continent
-				map.addContinent(new Continent(continent));//add it to the map object
+				string continent = str.substr(0, str.find(" "));
+				continentsList.push_back(continent);
+				map.addContinent(new Continent(continent));
 			}
 			//moving to Territory
 			while (getline(file, str) && str != "[countries]") {}
@@ -23,11 +26,12 @@ Map MapLoader::readMap(string mapFile) {
 				stringstream st(str);
 				string w;
 				vector<string> LSplit;
-				while (getline(st, w, ' ')) {//split the line to a vector
-					LSplit.push_back(w);//adding each element
+				while (getline(st, w, ' ')) {
+					LSplit.push_back(w);
 				}
+				territoryList.push_back(LSplit[1]);
 				int continentIndex = stoi(LSplit[2]) - 1;
-				map.addTerritory(new Territory(LSplit[1], map.getContinents()[continentIndex]));//add territory
+				map.addTerritory(new Territory(LSplit[1], map.getContinents()[continentIndex]));
 			}
 			//moving to Borders
 			while (getline(file, str) && str != "[borders]") {}
@@ -39,10 +43,10 @@ Map MapLoader::readMap(string mapFile) {
 					LSplit.push_back(w);
 				}
 				for (int i = 1; i < LSplit.size(); i++) {
-				    map.getTerritories()[stoi(LSplit[0]) - 1]->addNeighbour(map.getTerritories()[stoi(LSplit[i]) - 1]);//add each neighbor
+				    map.getTerritories()[stoi(LSplit[0]) - 1]->addNeighbour(map.getTerritories()[stoi(LSplit[i]) - 1]);
 				}
 			}
-			if (map.validate()) {//check validate
+			if (map.validate()) {
 			    map.print();
 				return map;
 			}
