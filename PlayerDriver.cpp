@@ -1,9 +1,11 @@
 #include "Player.h"
+using namespace std;
 
-int main() {
-    Player* Player1 = new Player("John");
-    Player* Player2 = new Player(*Player1, "Jason");
-    Player* Player3 = new Player();
+int main()
+{
+    Player *Player1 = new Player("John");
+    Player *Player2 = new Player(*Player1, "Jason");
+    Player *Player3 = new Player();
     cout << Player1;
     cout << Player2;
     cout << Player3;

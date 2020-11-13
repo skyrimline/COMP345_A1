@@ -4,9 +4,10 @@
 #include <iostream>
 using namespace std;
 
-class MapLoader {
+class MapLoader
+{
 public:
-	Map readMap(string mapFile);
+	static Map readMap(string mapFile);
 };
 
 #endif //MapLoader_H
