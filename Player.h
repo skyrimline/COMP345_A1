@@ -24,11 +24,13 @@ public:
     void issueOrder(string);
     string getName() const;
     string toString() const;
+    vector<Territory*> getTerritories();
+    void addTerritory(Territory* territory);
 
 private:
-    std::string name;
-    std::vector<Territory *> terrs;
-    std::vector<Card *> cards;
-    std::vector<Order *> orders;
+    string name;
+    vector<Territory *> terrs;
+    vector<Card *> cards;
+    vector<Order *> orders;
 };
 #endif //PLAYER_H

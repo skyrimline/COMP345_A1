@@ -93,3 +93,12 @@ string Player::getName() const
 {
     return name;
 }
+
+vector<Territory*> Player::getTerritories() {
+    return terrs;
+}
+
+void Player::addTerritory(Territory *territory) {
+    territory->setOwner(this);
+    this->terrs.push_back(territory);
+}

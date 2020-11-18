@@ -177,9 +177,7 @@ void Territory::setNumberOfArmies(int numberOfArmies) {
 }
 
 void Territory::setOwner(Player *owner) {
-    Player *oldOwner = this->owner;
     this->owner = owner;
-    delete oldOwner;
 }
 
 void Territory::setName(string name) {
@@ -213,6 +211,15 @@ bool Territory::isNeighbour(Territory *neighbour) {
         }
     }
     return false;
+}
+
+bool Territory::hasOwner() {
+    if(this->owner==NULL){
+        return false;
+    }
+    else{
+        return true;
+    }
 }
 
 Continent::Continent() {}

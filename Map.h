@@ -48,6 +48,7 @@ public:
     void setContinent(Continent* continent);
     void addNeighbour(Territory* neighbour);
     bool isNeighbour(Territory* neighbour);
+    bool hasOwner();
 };
 
 class Continent{
