@@ -3,8 +3,10 @@
 #include <vector>
 #include "Map.h"
 #include "Cards.h"
-#include "Orders.h"
+
 using namespace std;
+
+class Order;
 
 class Player
 {

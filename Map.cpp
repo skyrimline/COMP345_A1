@@ -1,4 +1,5 @@
 #include "Map.h"
+#include "Player.h"
 #include <vector>
 #include <iostream>
 
@@ -336,9 +337,9 @@ void Continent::print() {
 }
 
 void Continent::setBonus(int bonus) {
-    this->bonus=bonus;
+    *this->bonus=bonus;
 }
 
 int Continent::getBonus() {
-    return bonus;
+    return *bonus;
 }

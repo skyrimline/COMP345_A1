@@ -22,7 +22,7 @@ Player::Player(std::string pName)
 
 Player::Player(const Player &p, string pName)
 {
-    for (vector<Territory *>::iterator it = p.terrs.begin(); it != p.terrs.end(); ++it)
+    for (auto it = p.terrs.begin(); it != p.terrs.end(); ++it)
     {
         this->terrs.push_back(*it);
     }
@@ -76,12 +76,12 @@ string Player::toString() const
     string pInfo = "";
     pInfo += "Player " + this->getName() + "\'s info: \n";
     pInfo += "\tTerritory owned: \n";
-    for (vector<Territory *>::iterator it = this->terrs.begin(); it != this->terrs.end(); ++it)
+    for (auto it = this->terrs.begin(); it != this->terrs.end(); ++it)
     {
         pInfo += (*it)->getName() + ", ";
     }
     pInfo += "\n\tCards owned: \n";
-    for (vector<Card *>::iterator it = this->cards.begin(); it != this->cards.end(); ++it)
+    for (auto it = this->cards.begin(); it != this->cards.end(); ++it)
     {
         pInfo += (*it)->getType() + ", ";
     }

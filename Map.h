@@ -1,9 +1,9 @@
 #pragma once
 #include <iostream>
 #include <vector>
-#include "Player.h"
 using namespace std;
 
+class Player;
 class Territory;
 class Continent;
 

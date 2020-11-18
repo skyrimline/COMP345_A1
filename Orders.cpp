@@ -1,6 +1,8 @@
 
 #include "Orders.h"
 #include "Player.h"
+#include "Map.h"
+#include <algorithm>
 
 using namespace std;
 
@@ -96,7 +98,7 @@ Deploy &Deploy::operator<<(const Deploy &p)
 
 bool Deploy::validate(Player &p, Territory &t) //check if it is one kind of order
 {
-    if (find(p.terrs.begin(), p.terrs.end(), t) != p.terrs.end())
+    if (find(p.getTerritories().begin(), p.getTerritories().end(), &t) != p.getTerritories().end())
         return true;
     else
     {
@@ -110,7 +112,7 @@ void Deploy::execute(Player &p, Territory &t, int &num) //implement the order
     if (validate(p, t))
     {
         cout << "Player has deployed army of " + num << endl;
-        t.numberOfArmies += num;
+        *t.getNumberOfArmies() += num;
     }
 }
 
@@ -148,7 +150,7 @@ bool Advance::validate(Player &p, Territory &t, Territory *t1)
 {
     if (t.isNeighbour(t1))
         return false;
-    else if (find(p.terrs.begin(), p.terrs.end(), t) != p.terrs.end())
+    else if (find(p.getTerritories().begin(), p.getTerritories().end(), &t) != p.getTerritories().end())
         return true;
     else
     {
@@ -161,11 +163,11 @@ void Advance::execute(Player &p, Territory &t, Territory *t1, int &num)
 {
     if (validate(p, t, t1))
     {
-        if (find(p.terrs.begin(), p.terrs.end(), t) != p.terrs.end() && find(p.terrs.begin(), p.terrs.end(), t1) != p.terrs.end())
+        if (find(p.getTerritories().begin(), p.getTerritories().end(), &t) != p.getTerritories().end() && find(p.getTerritories().begin(), p.getTerritories().end(), t1) != p.getTerritories().end())
         {
             cout << "Player has advanced army of " + num << endl;
-            t.numberOfArmies -= num;
-            t1->numberOfArmies += num;
+            *t.getNumberOfArmies() -= num;
+            *t1->getNumberOfArmies() += num;
         }
         else
         {
@@ -175,14 +177,14 @@ void Advance::execute(Player &p, Territory &t, Territory *t1, int &num)
                 attack_chance = rand() % 100 + 1;
                 defend_chance = rand() % 100 + 1;
                 if (attack_chance <= 60)
-                    t1->numberOfArmies -= 1;
+                    *t1->getNumberOfArmies() -= 1;
                 if (attack_chance <= 70)
-                    t.numberOfArmies -= 1;
+                    *t.getNumberOfArmies() -= 1;
             }
-            if (t1->numberOfArmies == 0)
+            if (*t1->getNumberOfArmies() == 0)
             {
-                p.terrs.push_back(t1);
-                Card c;
+                p.getTerritories().push_back(t1);
+                // Card c;
                 //p.cards.push_back(c);
                 cout << "Player has conquered enemies' territory and gets a new card as reward" << endl;
             }
@@ -212,7 +214,7 @@ Bomb &Bomb::operator=(const Bomb &p)
 
 bool Bomb::validate(Player &p, Territory &t)
 {
-    if (find(p.terrs.begin(), p.terrs.end(), t) != p.terrs.end())
+    if (find(p.getTerritories().begin(), p.getTerritories().end(), &t) != p.getTerritories().end())
         return false;
     else
         return true;
@@ -222,7 +224,7 @@ void Bomb::execute(Player &p, Territory &t)
 {
     if (validate(p, t))
     {
-        int *num = t.numberOfArmies;
+        int *num = t.getNumberOfArmies();
         *num /= 2;
         cout << "Player has bombed enemies' territory, half of the armies are lost" << endl;
     }
@@ -293,7 +295,7 @@ Airlift &Airlift::operator=(const Airlift &p)
 
 bool Airlift::validate(Player &p, Territory &t, Territory *t1)
 {
-    if (find(p.terrs.begin(), p.terrs.end(), t) != p.terrs.end() || find(p.terrs.begin(), p.terrs.end(), t1) != p.terrs.end())
+    if (find(p.getTerritories().begin(), p.getTerritories().end(), &t) != p.getTerritories().end() || find(p.getTerritories().begin(), p.getTerritories().end(), t1) != p.getTerritories().end())
         return true;
     else
         return false;
@@ -302,15 +304,15 @@ bool Airlift::validate(Player &p, Territory &t, Territory *t1)
 void Airlift::execute(Player &p, Territory &t, Territory *t1, int &num)
 {
     if (validate(p, t, t1))
-        if (find(p.terrs.begin(), p.terrs.end(), t) != p.terrs.end() && find(p.terrs.begin(), p.terrs.end(), t1) != p.terrs.end())
+        if (find(p.getTerritories().begin(), p.getTerritories().end(), &t) != p.getTerritories().end() && find(p.getTerritories().begin(), p.getTerritories().end(), t1) != p.getTerritories().end())
         {
             cout << "Player has airlifted army of " + num << endl;
-            t.numberOfArmies -= num;
-            t1->numberOfArmies += num;
+            *t.getNumberOfArmies() -= num;
+            *t1->getNumberOfArmies() += num;
         }
         else
         {
-            if (find(p.terrs.begin(), p.terrs.end(), t) != p.terrs.end())
+            if (find(p.getTerritories().begin(), p.getTerritories().end(), &t) != p.getTerritories().end())
             {
                 for (int i = 0; i < num; i++)
                 {
@@ -318,14 +320,14 @@ void Airlift::execute(Player &p, Territory &t, Territory *t1, int &num)
                     attack_chance = rand() % 100 + 1;
                     defend_chance = rand() % 100 + 1;
                     if (attack_chance <= 60)
-                        t1->numberOfArmies -= 1;
+                        *t1->getNumberOfArmies() -= 1;
                     if (attack_chance <= 70)
-                        t.numberOfArmies -= 1;
+                        *t.getNumberOfArmies() -= 1;
                 }
-                if (t1->numberOfArmies == 0)
+                if (*t1->getNumberOfArmies() == 0)
                 {
-                    p.terrs.push_back(t1);
-                    Card c;
+                    p.getTerritories().push_back(t1);
+                    // Card c;
                     //p.cards.push_back(c);
                     cout << "Player has conquered enemies' territory and gets a new card as reward" << endl;
                 }

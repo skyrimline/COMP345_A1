@@ -1,4 +1,8 @@
 #include "Cards.h"
+#include "Player.h"
+#include "Map.h"
+
+const string Card::types[] = { "bomb", "reinforcement", "blockade", "airlift", "diplomacy" };
 
 Card::Card()
 {
@@ -74,7 +78,7 @@ Card Deck::draw()
 	int randomIndex = rand() % (cardsVector->size()); //get a random index within the deck
 	Card tempCard = cardsVector->at(randomIndex);	  //store a temporary card to return at the end
 
-	cardsVector->erase(cardsVector->begin() + randomIndex); //erase the chosen random card
+	// cardsVector->erase(cardsVector->begin() + randomIndex); //erase the chosen random card
 
 	return tempCard;
 }
@@ -93,11 +97,11 @@ Hand::Hand() //default constructor
 	owner = NULL;
 }
 
-Hand::Hand(Player *player)
-{
-	cardsVector = new vector<Card>;
-	owner = player;
-}
+// Hand::Hand(Player *player)
+// {
+// 	cardsVector = new vector<Card>;
+// 	owner = player;
+// }
 
 Hand::Hand(const Hand &hand2) //copy constructor
 {

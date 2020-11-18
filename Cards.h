@@ -11,7 +11,8 @@ using namespace std;
 class Card
 {
 public:
-	static string types[5] = {"bomb", "reinforcement", "blockade", "airlift", "diplomacy"};
+	static const string types[];
+
 	Card();													 //default constructor
 	Card(string t);											 //constructor
 	Card(const Card &card2);								 //copy constructor
