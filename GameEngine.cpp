@@ -76,7 +76,7 @@ void GameEngine::startupPhase() {
     for(int i=0; i<players.size();i++){
         cout<<"Player "<<i<<":"<<endl;
         for(int j=0;j<players[i]->getTerritories().size();j++){
-            cout<<"  "<<j<<" "<<players[i]->getTerritories()[j]->getName();<<endl;
+            cout<<"  "<<j<<" "<<players[i]->getTerritories()[j]->getName()<<endl;
         }
         if(luckyFlag&&players[i]->getTerritories().size()>numOfTerri){
             cout<<"You are lucky! You have got one more territory than the others!"<<endl;
@@ -106,14 +106,54 @@ void GameEngine::startupPhase() {
             break;
     }
     cout<<"Number of initial Armies: "<<numOfIniArmies<<endl;
+    for(int i=0;i<players.size();i++){
+        *players[i]->getArmies()+=numOfIniArmies;
+    }
 }
 
 void GameEngine::mainGameLoop(){
-
+    while(true){
+        this->reinforcementPhase();
+        this->issueOrderPhase();
+        this->exeuteOrderPhase();
+        //check if a player owns no territories
+        for(int i=0;i<players.size();i++){
+            if(players[i]->getTerritories().size()==0){
+                cout<<players[i]->getName()<<" has no territories left and is removed from the game!"<<endl;
+                players.erase(players.begin()+i);
+            }
+        }
+        //checks if a player has won the game
+        for(int i=0;i<players.size();i++){
+            if(players[i]->getTerritories().size()==this->gameMap->getTerritories().size()){
+                cout<<"Conguatulations! "<<players[i]->getName()<<" has won the game!"<<endl;
+                exit(0);
+            }
+        }
+    }
 }
 
 void GameEngine::reinforcementPhase() {
-
+    cout<<"---------------------"<<endl;
+    cout<<"Reinforcement phase starts..."<<endl;
+    for(int i=0;i<players.size();i++){
+        int terriArmy=players[i]->getTerritories().size()/3;
+        if(terriArmy<3){
+            terriArmy=3;
+        }
+        cout<<players[i]->getName()<<" got "<<terriArmy<<" armies from owned territories."<<endl;
+        int conArmy;
+        for(int j=0;j<gameMap->getContinents().size();j++){
+            if(players[i]->isOwner(gameMap->getContinents()[j])){
+                conArmy+=gameMap->getContinents()[j]->getBonus();
+            }
+        }
+        cout<<players[i]->getName()<<" got "<<conArmy<<" armies from owned continents."<<endl;
+        players[i]->addArmies(terriArmy+conArmy);
+        cout<<"Total: "<<terriArmy+conArmy<<endl;
+    }
+    cout<<"Reinforcement phase ends..."<<endl;
+    cout<<"---------------------"<<endl;
 }
 
 void GameEngine::issueOrderPhase() {

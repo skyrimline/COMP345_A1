@@ -54,10 +54,11 @@ public:
 class Continent{
 private:
     string* name;
+    int* bonus;
     vector<Territory*> territories;
 public:
     Continent();
-    Continent(string name);
+    Continent(string name, int bonus);
     Continent(Continent* continent);
     ~Continent();
     string getName();
@@ -68,4 +69,6 @@ public:
     bool isConnectedGraph();
     bool contains(Territory* territory);
     void print();
+    void setBonus(int bonus);
+    int getBonus();
 };

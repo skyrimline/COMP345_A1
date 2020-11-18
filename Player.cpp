@@ -102,3 +102,34 @@ void Player::addTerritory(Territory *territory) {
     territory->setOwner(this);
     this->terrs.push_back(territory);
 }
+
+int* Player::getArmies() {
+    return armies;
+}
+void Player::addArmies(int armies) {
+    *this->armies+=armies;
+}
+
+bool Player::isOwner(Continent *continent){
+    vector<Territory*> ownedTerrs;
+    for(int i=0; i<terrs.size();i++){
+        if(terrs[i]->getContinent()==continent){
+            ownedTerrs.push_back(terrs[i]);
+        }
+    }
+    if(ownedTerrs.size()==continent->getTerritories().size()){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+bool Player::isOwner(Territory *territory) {
+    for(int i=0; i<this->terrs.size();i++){
+        if(territory==terrs[i]){
+            return true;
+        }
+    }
+    return false;
+}

@@ -1,14 +1,10 @@
-#ifndef PLAYER_H
-#define PLAYER_H
-
+#pragma once
 #include <string>
 #include <vector>
+#include "Map.h"
+#include "Cards.h"
+#include "Orders.h"
 using namespace std;
-
-class Map;
-class Card;
-class Order;
-class Territory;
 
 class Player
 {
@@ -26,11 +22,15 @@ public:
     string toString() const;
     vector<Territory*> getTerritories();
     void addTerritory(Territory* territory);
+    int* getArmies();
+    void addArmies(int armies);
+    bool isOwner(Continent* continent);
+    bool isOwner(Territory* territory);
 
 private:
     string name;
     vector<Territory *> terrs;
     vector<Card *> cards;
     vector<Order *> orders;
+    int* armies;
 };
-#endif //PLAYER_H
