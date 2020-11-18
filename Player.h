@@ -20,17 +20,18 @@ public:
     void issueOrder(string);
     string getName() const;
     string toString() const;
-    vector<Territory*> getTerritories();
-    void addTerritory(Territory* territory);
-    int* getArmies();
+    vector<Territory *> getTerritories();
+    void addTerritory(Territory *territory);
+    void addCards(Hand *);
+    int *getArmies();
     void addArmies(int armies);
-    bool isOwner(Continent* continent);
-    bool isOwner(Territory* territory);
+    bool isOwner(Continent *continent);
+    bool isOwner(Territory *territory);
 
 private:
     string name;
     vector<Territory *> terrs;
     vector<Card *> cards;
     vector<Order *> orders;
-    int* armies;
+    int *armies;
 };

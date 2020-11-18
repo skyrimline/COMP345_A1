@@ -19,8 +19,9 @@ public:
     void reinforcementPhase();
     void issueOrderPhase();
     void exeuteOrderPhase();
+
 private:
     Map *gameMap;
-    vector<Player*> players;
-    Hand *cards;
+    vector<Player *> players;
+    Hand *cards[];
 };
