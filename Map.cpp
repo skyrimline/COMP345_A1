@@ -177,9 +177,7 @@ void Territory::setNumberOfArmies(int numberOfArmies) {
 }
 
 void Territory::setOwner(Player *owner) {
-    Player *oldOwner = this->owner;
     this->owner = owner;
-    delete oldOwner;
 }
 
 void Territory::setName(string name) {
@@ -215,10 +213,20 @@ bool Territory::isNeighbour(Territory *neighbour) {
     return false;
 }
 
+bool Territory::hasOwner() {
+    if(this->owner==NULL){
+        return false;
+    }
+    else{
+        return true;
+    }
+}
+
 Continent::Continent() {}
 
-Continent::Continent(string name) {
+Continent::Continent(string name, int bonus) {
     this->name = new string(name);
+    this->bonus = new int(bonus);
 }
 
 Continent::Continent(Continent *continent) {
@@ -324,4 +332,13 @@ void Continent::print() {
     for (int i = 0; i < this->territories.size(); i++) {
         cout << "  " << i + 1 << ". " << this->territories[i]->getName() << endl;
     }
+    cout<<"The bonus value for this continent is: "<<bonus<<endl;
+}
+
+void Continent::setBonus(int bonus) {
+    this->bonus=bonus;
+}
+
+int Continent::getBonus() {
+    return bonus;
 }

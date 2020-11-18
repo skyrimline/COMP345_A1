@@ -1,20 +1,26 @@
-#ifndef GAMEENGINE_H
-#define GAMEENGINE_H
-
-class Map;
-class Player;
-class Card;
-class Hand;
+#pragma once
+#include <vector>
+#include <iostream>
+#include <random>
+#include <fstream>
+#include "Map.h"
+#include "MapLoader.h"
+#include "Player.h"
+#include "Cards.h"
+#include "Orders.h"
+using namespace std;
 
 class GameEngine
 {
 public:
     GameEngine();
-
+    void startupPhase();
+    void mainGameLoop();
+    void reinforcementPhase();
+    void issueOrderPhase();
+    void exeuteOrderPhase();
 private:
     Map *gameMap;
-    Player *players[];
+    vector<Player*> players;
     Hand *cards;
 };
-
-#endif // GAMEENGINE_H
