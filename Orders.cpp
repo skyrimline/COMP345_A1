@@ -1,7 +1,10 @@
+
 #include "Orders.h"
+#include "Player.h"
 
 using namespace std;
 
+/*
 //default constructor//constructor//copy constructor
 Order::Order() {
 
@@ -20,49 +23,44 @@ Order & Order::operator<<(const Order & order)
 {
 	return *this;
 }
+*/
 
-
-
-bool Order::validate(Order)
+/*
+bool Order::validate()
 {
 	return false;
 }
+*/
 
-void Order::execute(Order)
+void Order::execute()
 {
-	
 }
 
 void Order::sticker()
 {
-	cout << " ";
 }
 
-
-
-//default constructor//constructor//copy constructor	
+//default constructor//constructor//copy constructor
 OrderList::OrderList()
 {
 }
 OrderList::OrderList(string name)
 {
 	this->name = name;
-	list <Order> orderlist;
+	list<Order> orderlist;
 }
 
-OrderList::OrderList(const OrderList & orderlist)
+OrderList::OrderList(const OrderList &orderlist)
 {
 	*this = orderlist;
 }
 
-OrderList & OrderList::operator<<(const OrderList & p)
+OrderList &OrderList::operator<<(const OrderList &p)
 {
 	return *this;
 }
 
-
-
-void OrderList::move(Order& p_order)
+void OrderList::move(Order &p_order)
 {
 	orderlist.push_back(p_order);
 	cout << "Player has added Order ";
@@ -70,15 +68,11 @@ void OrderList::move(Order& p_order)
 	cout << " to the OrderList" << endl;
 }
 
-void OrderList::remove(Order& p_order)
+void OrderList::remove()
 {
 	orderlist.pop_back();
-	cout << "Player has removed Order "; 
-	p_order.sticker();
-	cout << " from the OrderList" << endl;
+	cout << "Player has removed the last Order from the OrderList" << endl;
 }
-	
-
 
 //default constructor//constructor//copy constructor
 Deploy::Deploy()
@@ -90,27 +84,34 @@ Deploy::Deploy(string name)
 	this->name = name;
 }
 
-Deploy::Deploy(const Deploy & deploy)
+Deploy::Deploy(const Deploy &deploy)
 {
 	*this = deploy;
 }
 
-Deploy & Deploy::operator<<(const Deploy & p)
+Deploy &Deploy::operator<<(const Deploy &p)
 {
 	return *this;
 }
 
-bool Deploy::validate(Deploy d)//check if it is one kind of order
+bool Deploy::validate(Player &p, Territory &t) //check if it is one kind of order
 {
-	return true;
+	if (find(p.terrs.begin(), p.terrs.end(), t) != p.terrs.end())
+		return true;
+	else
+	{
+		cout << "invalid order " << endl;
+		return false;
+	}
 }
 
-void Deploy::execute(Deploy d)//implement the order
+void Deploy::execute(Player &p, Territory &t, int &num) //implement the order
 {
-	if (validate(d))
-		cout << "Player1 has deployed their army." << endl;
-	else
-		cout << "" << endl;
+	if (validate(p, t))
+	{
+		cout << "Player has deployed army of " + num << endl;
+		t.numberOfArmies += num;
+	}
 }
 
 void Deploy::sticker()
@@ -128,12 +129,12 @@ Advance::Advance(string name)
 	this->name = name;
 }
 
-Advance::Advance(const Advance & advance)
+Advance::Advance(const Advance &advance)
 {
 	*this = advance;
 }
 
-Advance & Advance::operator<<(const Advance & p)
+Advance &Advance::operator<<(const Advance &p)
 {
 	return *this;
 }
@@ -143,23 +144,53 @@ void Advance::sticker()
 	cout << "Advance";
 }
 
-	
-
-bool Advance::validate(Advance a)
+bool Advance::validate(Player &p, Territory &t, Territory *t1)
 {
-	return true;
-}
-
-void Advance::execute(Advance a)
-{
-	if (validate(a))
-		cout << "Player1 has advanced their army." << endl;
+	if (t.isNeighbour(t1))
+		return false;
+	else if (find(p.terrs.begin(), p.terrs.end(), t) != p.terrs.end())
+		return true;
 	else
-		cout << "" << endl;
+	{
+		cout << "invalid order " << endl;
+		return false;
+	}
 }
-	
 
-//default constructor//constructor//copy constructor	
+void Advance::execute(Player &p, Territory &t, Territory *t1, int &num)
+{
+	if (validate(p, t, t1))
+	{
+		if (find(p.terrs.begin(), p.terrs.end(), t) != p.terrs.end() && find(p.terrs.begin(), p.terrs.end(), t1) != p.terrs.end())
+		{
+			cout << "Player has advanced army of " + num << endl;
+			t.numberOfArmies -= num;
+			t1->numberOfArmies += num;
+		}
+		else
+		{
+			for (int i = 0; i < num; i++)
+			{
+				int attack_chance, defend_chance;
+				attack_chance = rand() % 100 + 1;
+				defend_chance = rand() % 100 + 1;
+				if (attack_chance <= 60)
+					t1->numberOfArmies -= 1;
+				if (attack_chance <= 70)
+					t.numberOfArmies -= 1;
+			}
+			if (t1->numberOfArmies == 0)
+			{
+				p.terrs.push_back(t1);
+				Card c;
+				//p.cards.push_back(c);
+				cout << "Player has conquered enemies' territory and gets a new card as reward" << endl;
+			}
+		}
+	}
+}
+
+//default constructor//constructor//copy constructor
 Bomb::Bomb()
 {
 }
@@ -169,25 +200,32 @@ Bomb::Bomb(string name)
 	this->name = name;
 }
 
-Bomb::Bomb(const Bomb & bomb)
+Bomb::Bomb(const Bomb &bomb)
 {
 	*this = bomb;
 }
 
-Bomb & Bomb::operator=(const Bomb & p)
+Bomb &Bomb::operator=(const Bomb &p)
 {
 	return *this;
 }
 
-bool Bomb::validate(Bomb b)
+bool Bomb::validate(Player &p, Territory &t)
 {
-	return true;
+	if (find(p.terrs.begin(), p.terrs.end(), t) != p.terrs.end())
+		return false;
+	else
+		return true;
 }
 
-void Bomb::execute(Bomb b)
+void Bomb::execute(Player &p, Territory &t)
 {
-	if (validate(b))
-		cout << "Player1 has bombed." << endl;
+	if (validate(p, t))
+	{
+		int *num = t.numberOfArmies;
+		*num /= 2;
+		cout << "Player has bombed enemies' territory, half of the armies are lost" << endl;
+	}
 	else
 		cout << "" << endl;
 }
@@ -195,7 +233,6 @@ void Bomb::sticker()
 {
 	cout << "Bomb";
 }
-
 
 //default constructor//constructor//copy constructor
 Blockade::Blockade()
@@ -207,25 +244,25 @@ Blockade::Blockade(string name)
 	this->name = name;
 }
 
-Blockade::Blockade(const Blockade & blockade)
+Blockade::Blockade(const Blockade &blockade)
 {
 	*this = blockade;
 }
 
-Blockade & Blockade::operator=(const Blockade & p)
+Blockade &Blockade::operator=(const Blockade &p)
 {
 	return *this;
 }
 
-bool Blockade::validate(Blockade b)
+bool Blockade::validate()
 {
 	return true;
 }
 
-void Blockade::execute(Blockade b)
+void Blockade::execute()
 {
-	if (validate(b))
-		cout << "Player1 has blockaded." << endl;
+	if (validate())
+		cout << "Player has blockaded." << endl;
 	else
 		cout << "" << endl;
 }
@@ -233,7 +270,6 @@ void Blockade::sticker()
 {
 	cout << "Blockade";
 }
-
 
 //default constructor//constructor//copy constructor
 Airlift::Airlift()
@@ -245,25 +281,56 @@ Airlift::Airlift(string name)
 	this->name = name;
 }
 
-Airlift::Airlift(const Airlift & airlift)
+Airlift::Airlift(const Airlift &airlift)
 {
 	*this = airlift;
 }
 
-Airlift & Airlift::operator=(const Airlift & p)
+Airlift &Airlift::operator=(const Airlift &p)
 {
 	return *this;
 }
 
-bool Airlift::validate(Airlift a)
+bool Airlift::validate(Player &p, Territory &t, Territory *t1)
 {
-	return true;
+	if (find(p.terrs.begin(), p.terrs.end(), t) != p.terrs.end() || find(p.terrs.begin(), p.terrs.end(), t1) != p.terrs.end())
+		return true;
+	else
+		return false;
 }
 
-void Airlift::execute(Airlift a)
+void Airlift::execute(Player &p, Territory &t, Territory *t1, int &num)
 {
-	if (validate(a))
-		cout << "Player1 has airlifted their army." << endl;
+	if (validate(p, t, t1))
+		if (find(p.terrs.begin(), p.terrs.end(), t) != p.terrs.end() && find(p.terrs.begin(), p.terrs.end(), t1) != p.terrs.end())
+		{
+			cout << "Player has airlifted army of " + num << endl;
+			t.numberOfArmies -= num;
+			t1->numberOfArmies += num;
+		}
+		else
+		{
+			if (find(p.terrs.begin(), p.terrs.end(), t) != p.terrs.end())
+			{
+				for (int i = 0; i < num; i++)
+				{
+					int attack_chance, defend_chance;
+					attack_chance = rand() % 100 + 1;
+					defend_chance = rand() % 100 + 1;
+					if (attack_chance <= 60)
+						t1->numberOfArmies -= 1;
+					if (attack_chance <= 70)
+						t.numberOfArmies -= 1;
+				}
+				if (t1->numberOfArmies == 0)
+				{
+					p.terrs.push_back(t1);
+					Card c;
+					//p.cards.push_back(c);
+					cout << "Player has conquered enemies' territory and gets a new card as reward" << endl;
+				}
+			}
+		}
 	else
 		cout << "" << endl;
 }
@@ -271,8 +338,6 @@ void Airlift::sticker()
 {
 	cout << "Airlift";
 }
-
-
 
 //default constructor//constructor//copy constructor
 Negotiate::Negotiate()
@@ -284,25 +349,25 @@ Negotiate::Negotiate(string name)
 	this->name = name;
 }
 
-Negotiate::Negotiate(const Negotiate & negotiate)
+Negotiate::Negotiate(const Negotiate &negotiate)
 {
 	*this = negotiate;
 }
 
-Negotiate & Negotiate::operator=(const Negotiate & p)
+Negotiate &Negotiate::operator=(const Negotiate &p)
 {
 	return *this;
 }
 
-bool Negotiate::validate(Negotiate n)
+bool Negotiate::validate()
 {
 	return true;
 }
 
-void Negotiate::execute(Negotiate n)
+void Negotiate::execute()
 {
-	if (validate(n))
-		cout << "Player1 has started negotiation." << endl;
+	if (validate())
+		cout << "Player has started negotiation." << endl;
 	else
 		cout << "" << endl;
 }
