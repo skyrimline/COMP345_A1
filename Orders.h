@@ -2,22 +2,26 @@
 #include <iostream>
 #include <list>
 #include <string>
+#include <vector>
+#include "Player.h"
 using namespace std;
 
 
 class Order
 {
 public:
+	/*
 	Order();
 	Order(string name);
 	Order(const Order& order);
 	Order& operator << (const Order& order);
-	bool validate(Order);
-	void execute(Order);
+	*/
+	//virtual bool validate();
+	virtual void execute();
 	virtual void sticker();
 	
 private:
-	string name;
+	//string name;
 };
 
 class OrderList
@@ -30,7 +34,7 @@ public:
 	OrderList(const OrderList& OrderList);
 	OrderList& operator << (const OrderList &p);
 	void move(Order& p_order);
-	void remove(Order& p_order);
+	void remove();
 
 private:
 	string name;
@@ -44,8 +48,8 @@ public:
 	Deploy(string name);
 	Deploy(const Deploy& Deploy);
 	Deploy& operator << (const Deploy &p);
-	bool validate(Deploy);
-	void execute(Deploy);
+	bool validate(Player& p, Territory& t);
+	void execute(Player& p, Territory& t, int& num);
 	void sticker();
 private:
 	string name;
@@ -59,8 +63,8 @@ public:
 	Advance(string name);
 	Advance(const Advance& Advance);
 	Advance& operator << (const Advance &p);
-	bool validate(Advance);
-	void execute(Advance);
+	bool validate(Player& p, Territory& t, Territory* t1);
+	void execute(Player& p, Territory& t, Territory* t1, int& num);
 	void sticker();
 private:
 	string name;
@@ -74,8 +78,8 @@ public:
 	Bomb(string name);
 	Bomb(const Bomb& Bomb);
 	Bomb& operator = (const Bomb &p);
-	bool validate(Bomb);
-	void execute(Bomb);
+	bool validate(Player& p, Territory& t);
+	void execute(Player& p, Territory& t);
 	void sticker();
 private:
 	string name;
@@ -89,8 +93,8 @@ public:
 	Blockade(string name);
 	Blockade(const Blockade& Blockade);
 	Blockade& operator = (const Blockade &p);
-	bool validate(Blockade);
-	void execute(Blockade);
+	bool validate();
+	void execute();
 	void sticker();
 private:
 	string name;
@@ -104,8 +108,8 @@ public:
 	Airlift(string name);
 	Airlift(const Airlift& Airlift);
 	Airlift& operator = (const Airlift &p);
-	bool validate(Airlift);
-	void execute(Airlift);
+	bool validate(Player& p, Territory& t, Territory* t1);
+	void execute(Player& p, Territory& t, Territory* t1, int& num);
 	void sticker();
 private:
 	string name;
@@ -119,8 +123,8 @@ public:
 	Negotiate(string name);
 	Negotiate(const Negotiate& Negotiate);
 	Negotiate& operator = (const Negotiate &p);
-	bool validate(Negotiate);
-	void execute(Negotiate);
+	bool validate();
+	void execute();
 	void sticker();
 private:
 	string name;
