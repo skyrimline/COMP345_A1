@@ -1,312 +1,132 @@
-#include "Orders.h"
-
+#pragma once
+#include <iostream>
+#include <list>
+#include <string>
+#include <vector>
+#include "Player.h"
 using namespace std;
 
-//default constructor//constructor//copy constructor
-Order::Order() {
 
-}
+class Order
+{
+public:
+	/*
+	Order();
+	Order(string name);
+	Order(const Order& order);
+	Order& operator << (const Order& order);
+	*/
+	//virtual bool validate();
+	virtual void execute();
+	virtual void sticker();
 	
-Order::Order(string name) {
-	this->name = name;
-}
+private:
+	//string name;
+};
 
-Order::Order(const Order & order)
-{
-	*this = order;
-}
-
-Order & Order::operator<<(const Order & order)
-{
-	return *this;
-}
-
-
-
-bool Order::validate(Order)
-{
-	return false;
-}
-
-void Order::execute(Order)
+class OrderList
 {
 	
-}
-
-void Order::sticker()
-{
-	cout << " ";
-}
-
-
-
-//default constructor//constructor//copy constructor	
-OrderList::OrderList()
-{
-}
-OrderList::OrderList(string name)
-{
-	this->name = name;
+public:
 	list <Order> orderlist;
-}
+	OrderList();
+	OrderList(string name);
+	OrderList(const OrderList& OrderList);
+	OrderList& operator << (const OrderList &p);
+	void move(Order& p_order);
+	void remove();
 
-OrderList::OrderList(const OrderList & orderlist)
-{
-	*this = orderlist;
-}
-
-OrderList & OrderList::operator<<(const OrderList & p)
-{
-	return *this;
-}
-
-
-
-void OrderList::move(Order& p_order)
-{
-	orderlist.push_back(p_order);
-	cout << "Player has added Order ";
-	p_order.sticker();
-	cout << " to the OrderList" << endl;
-}
-
-void OrderList::remove(Order& p_order)
-{
-	orderlist.pop_back();
-	cout << "Player has removed Order "; 
-	p_order.sticker();
-	cout << " from the OrderList" << endl;
-}
+private:
+	string name;
 	
+};
 
-
-//default constructor//constructor//copy constructor
-Deploy::Deploy()
+class Deploy : public Order 
 {
-}
-
-Deploy::Deploy(string name)
-{
-	this->name = name;
-}
-
-Deploy::Deploy(const Deploy & deploy)
-{
-	*this = deploy;
-}
-
-Deploy & Deploy::operator<<(const Deploy & p)
-{
-	return *this;
-}
-
-bool Deploy::validate(Deploy d)//check if it is one kind of order
-{
-	return true;
-}
-
-void Deploy::execute(Deploy d)//implement the order
-{
-	if (validate(d))
-		cout << "Player1 has deployed their army." << endl;
-	else
-		cout << "" << endl;
-}
-
-void Deploy::sticker()
-{
-	cout << "Deploy";
-}
-
-//default constructor//constructor//copy constructor
-Advance::Advance()
-{
-}
-
-Advance::Advance(string name)
-{
-	this->name = name;
-}
-
-Advance::Advance(const Advance & advance)
-{
-	*this = advance;
-}
-
-Advance & Advance::operator<<(const Advance & p)
-{
-	return *this;
-}
-
-void Advance::sticker()
-{
-	cout << "Advance";
-}
-
+public:
+	Deploy();
+	Deploy(string name);
+	Deploy(const Deploy& Deploy);
+	Deploy& operator << (const Deploy &p);
+	bool validate(Player& p, Territory& t);
+	void execute(Player& p, Territory& t, int& num);
+	void sticker();
+private:
+	string name;
 	
+};
 
-bool Advance::validate(Advance a)
+class Advance : public Order 
 {
-	return true;
-}
-
-void Advance::execute(Advance a)
-{
-	if (validate(a))
-		cout << "Player1 has advanced their army." << endl;
-	else
-		cout << "" << endl;
-}
+public:
+	Advance();
+	Advance(string name);
+	Advance(const Advance& Advance);
+	Advance& operator << (const Advance &p);
+	bool validate(Player& p, Territory& t, Territory* t1);
+	void execute(Player& p, Territory& t, Territory* t1, int& num);
+	void sticker();
+private:
+	string name;
 	
+};	
 
-//default constructor//constructor//copy constructor	
-Bomb::Bomb()
+class Bomb : public Order 
 {
-}
+public:
+	Bomb();
+	Bomb(string name);
+	Bomb(const Bomb& Bomb);
+	Bomb& operator = (const Bomb &p);
+	bool validate(Player& p, Territory& t);
+	void execute(Player& p, Territory& t);
+	void sticker();
+private:
+	string name;
+	
+};
 
-Bomb::Bomb(string name)
+class Blockade : public Order 
 {
-	this->name = name;
-}
+public:
+	Blockade();
+	Blockade(string name);
+	Blockade(const Blockade& Blockade);
+	Blockade& operator = (const Blockade &p);
+	bool validate();
+	void execute();
+	void sticker();
+private:
+	string name;
+	
+};
 
-Bomb::Bomb(const Bomb & bomb)
+class Airlift : public Order 
 {
-	*this = bomb;
-}
+public:
+	Airlift();
+	Airlift(string name);
+	Airlift(const Airlift& Airlift);
+	Airlift& operator = (const Airlift &p);
+	bool validate(Player& p, Territory& t, Territory* t1);
+	void execute(Player& p, Territory& t, Territory* t1, int& num);
+	void sticker();
+private:
+	string name;
+	
+};
 
-Bomb & Bomb::operator=(const Bomb & p)
+class Negotiate : public Order 
 {
-	return *this;
-}
-
-bool Bomb::validate(Bomb b)
-{
-	return true;
-}
-
-void Bomb::execute(Bomb b)
-{
-	if (validate(b))
-		cout << "Player1 has bombed." << endl;
-	else
-		cout << "" << endl;
-}
-void Bomb::sticker()
-{
-	cout << "Bomb";
-}
-
-
-//default constructor//constructor//copy constructor
-Blockade::Blockade()
-{
-}
-
-Blockade::Blockade(string name)
-{
-	this->name = name;
-}
-
-Blockade::Blockade(const Blockade & blockade)
-{
-	*this = blockade;
-}
-
-Blockade & Blockade::operator=(const Blockade & p)
-{
-	return *this;
-}
-
-bool Blockade::validate(Blockade b)
-{
-	return true;
-}
-
-void Blockade::execute(Blockade b)
-{
-	if (validate(b))
-		cout << "Player1 has blockaded." << endl;
-	else
-		cout << "" << endl;
-}
-void Blockade::sticker()
-{
-	cout << "Blockade";
-}
-
-
-//default constructor//constructor//copy constructor
-Airlift::Airlift()
-{
-}
-
-Airlift::Airlift(string name)
-{
-	this->name = name;
-}
-
-Airlift::Airlift(const Airlift & airlift)
-{
-	*this = airlift;
-}
-
-Airlift & Airlift::operator=(const Airlift & p)
-{
-	return *this;
-}
-
-bool Airlift::validate(Airlift a)
-{
-	return true;
-}
-
-void Airlift::execute(Airlift a)
-{
-	if (validate(a))
-		cout << "Player1 has airlifted their army." << endl;
-	else
-		cout << "" << endl;
-}
-void Airlift::sticker()
-{
-	cout << "Airlift";
-}
-
-
-
-//default constructor//constructor//copy constructor
-Negotiate::Negotiate()
-{
-}
-
-Negotiate::Negotiate(string name)
-{
-	this->name = name;
-}
-
-Negotiate::Negotiate(const Negotiate & negotiate)
-{
-	*this = negotiate;
-}
-
-Negotiate & Negotiate::operator=(const Negotiate & p)
-{
-	return *this;
-}
-
-bool Negotiate::validate(Negotiate n)
-{
-	return true;
-}
-
-void Negotiate::execute(Negotiate n)
-{
-	if (validate(n))
-		cout << "Player1 has started negotiation." << endl;
-	else
-		cout << "" << endl;
-}
-void Negotiate::sticker()
-{
-	cout << "Negotiate";
-}
+public:
+	Negotiate();
+	Negotiate(string name);
+	Negotiate(const Negotiate& Negotiate);
+	Negotiate& operator = (const Negotiate &p);
+	bool validate();
+	void execute();
+	void sticker();
+private:
+	string name;
+	
+};
