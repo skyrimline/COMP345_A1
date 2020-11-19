@@ -50,6 +50,7 @@ public:
 	void playCard(int index, Deck deck);
 
 	bool isEmpty();
+	vector<Card> getCardsVector();
 
 private:
 	Player *owner;

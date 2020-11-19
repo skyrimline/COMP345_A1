@@ -24,7 +24,7 @@ public:
     string toString() const;
     vector<Territory *> getTerritories();
     void addTerritory(Territory *territory);
-    void addCards(Hand *);
+    void addCards(Hand *hand);
     int *getArmies();
     void addArmies(int armies);
     bool isOwner(Continent *continent);

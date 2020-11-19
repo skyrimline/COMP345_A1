@@ -110,6 +110,18 @@ void Player::addArmies(int armies) {
     *this->armies+=armies;
 }
 
+void Player::addCards(Hand* hand)
+{
+    vector<Card> tempCardsVector = hand->getCardsVector();
+    while (!tempCardsVector.empty()) {
+        Card* tempCard = new Card(tempCardsVector.back());
+        tempCardsVector.pop_back();
+        cards.push_back(tempCard);
+    }
+    
+}
+
+
 bool Player::isOwner(Continent *continent){
     vector<Territory*> ownedTerrs;
     for(int i=0; i<terrs.size();i++){

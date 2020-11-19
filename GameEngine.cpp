@@ -2,6 +2,11 @@
 
 GameEngine::GameEngine()
 {
+    //set the state to "startup" initially
+    state = "Start up";
+    Notify();
+
+
     // define array for candidate maps
     static const string mapName[] = {"artic", "austria-hungary", "canada", "solar"};
 
@@ -161,6 +166,10 @@ void GameEngine::reinforcementPhase()
 {
     cout << "---------------------" << endl;
     cout << "Reinforcement phase starts..." << endl;
+
+    state = "Reinforcement Phase";
+    Notify();
+
     for (int i = 0; i < players.size(); i++)
     {
         int terriArmy = players[i]->getTerritories().size() / 3;
@@ -169,7 +178,7 @@ void GameEngine::reinforcementPhase()
             terriArmy = 3;
         }
         cout << players[i]->getName() << " got " << terriArmy << " armies from owned territories." << endl;
-        int conArmy;
+        int conArmy = 0; 
         for (int j = 0; j < gameMap->getContinents().size(); j++)
         {
             if (players[i]->isOwner(gameMap->getContinents()[j]))
@@ -187,8 +196,18 @@ void GameEngine::reinforcementPhase()
 
 void GameEngine::issueOrderPhase()
 {
+    state = "Issue Orders Phase";
+    Notify();
 }
 
 void GameEngine::exeuteOrderPhase()
 {
+    state = "Execute Orders Phase";
+    Notify();
+}
+
+
+string GameEngine::getState()
+{
+    return state;
 }

@@ -143,3 +143,8 @@ bool Hand::isEmpty()
 {
 	return cardsVector->empty();
 }
+
+vector<Card> Hand::getCardsVector()
+{
+	return *cardsVector;
+}

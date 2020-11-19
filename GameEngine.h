@@ -8,11 +8,14 @@
 #include "Player.h"
 #include "Cards.h"
 #include "Orders.h"
+#include "GameObservers.h"
+
 using namespace std;
 
-class GameEngine
+class GameEngine : public Subject
 {
 public:
+
     GameEngine();
     void startupPhase();
     void mainGameLoop();
@@ -20,7 +23,11 @@ public:
     void issueOrderPhase();
     void exeuteOrderPhase();
 
+    string getState();
+
 private:
+    string state;
+
     Map *gameMap;
     vector<Player *> players;
     Hand *cards[];

@@ -17,7 +17,7 @@ Map MapLoader::readMap(string mapFile) {
 			while (getline(file, str) && str != "[continents]\r") {}
 			while (getline(file, str) && str != "\r") {
 				string continent = str.substr(0, str.find(" "));
-				int bonus;//needs implement
+				int bonus = 0; //todo needs proper implement
 				continentsList.push_back(continent);
 				map.addContinent(new Continent(continent, bonus));
 			}
