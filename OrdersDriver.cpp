@@ -1,37 +1,68 @@
 
 #include "Orders.h"
+#include "Player.h"
 
 
 int main() 
 {
-	OrderList OL1;
-	Deploy d1;
-	Advance a1;
-	Bomb b1;
-	Blockade bl1;
-	Airlift al1;
-	Negotiate n1;
+	
+	
+	Deploy *d1 = new Deploy();
+	Advance *a1 = new Advance();
+	Bomb *b1 = new Bomb();
+	Blockade *bl1 = new Blockade();
+	Airlift *al1 = new Airlift();
+	Negotiate *n1 = new Negotiate();
+	Player *p1 = new Player();
+	Player *p2 = new Player();
+	Territory *t1 = new Territory();
+	Territory *t2 = new Territory();
 
-	d1.execute(d1);
-	OL1.move(d1);
-	OL1.remove(d1);
-	a1.execute(a1);
-	OL1.move(a1);
-	OL1.remove(a1);
-	b1.execute(b1);
-	OL1.move(b1);
-	OL1.remove(b1);
-	bl1.execute(bl1);
-	OL1.move(bl1);
-	OL1.remove(bl1);
-	al1.execute(al1);
-	OL1.move(al1);
-	OL1.remove(al1);
-	n1.execute(n1);
-	OL1.move(n1);
-	OL1.remove(n1);
+	//test start
+	p1->addTerritory(t1);
+	//p1.addTerritory(t2);
+	p2->addTerritory(t2);
+	t1->addNeighbour(t2);
+	t1->setNumberOfArmies(4);
+	t2->setNumberOfArmies(4);
+	int* numbefore = t1->getNumberOfArmies();
+	
+	/*
+	d1->validate(p1, t1);
+	d1->execute(p1, t1, 3);
+	
+	a1->validate(p1, t1, t2);
+	a1->execute(p1, t1, t2, 3);
+
+	al1->validate(p1, t1, t2);
+	al1->execute(p1, t1, t2, 3);
+
+	b1->validate(p1, t2);
+	b1->execute(p1, t2);
+	int* numafter = t2->getNumberOfArmies();
+	cout << *numbefore << endl;
+	cout << *numafter << endl;
+
+
+	bl1->validate(p1, t1);
+	bl1->execute(p1, t1);
+	int* numafter = t1->getNumberOfArmies();
+	cout << *numbefore << endl;
+	cout << *numafter << endl;
+
+
+	n1->validate(p1, p2);
+	n1->execute(p1, p2);
+
+
+	*/
+	
+	
+
+	
 
 	
 
 	return 0;
+	
 }
