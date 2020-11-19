@@ -2,7 +2,6 @@
 #include "Player.h"
 #include <vector>
 #include <iostream>
-
 using namespace std;
 
 Map::Map() {}
@@ -43,7 +42,7 @@ bool Map::isConnectedGraph() {
     vector<Territory *> visit;
     //put the first territory into the queue
     visit.push_back(this->territories[0]);
-    while (visit.size() != 0) {
+    while (!visit.empty()) {
         Territory *current = visit.front();
         vector<Territory *> neighbours = current->getNeighbours();
         for (int i = 0; i < neighbours.size(); i++) {
@@ -102,7 +101,7 @@ bool Map::validate() {
     //checks if every territory belongs to one continent
     bool belongFlag = true;
     for (int i = 0; i < this->territories.size(); i++) {
-        if (territories[i]->getContinent() == NULL) {
+        if (territories[i]->getContinent() == nullptr) {
             belongFlag = false;
             break;
         }
@@ -189,7 +188,7 @@ void Territory::setName(string name) {
 
 void Territory::setContinent(Continent *continent) {
     Continent *oldContinent = this->continent;
-    if (oldContinent != NULL) {
+    if (oldContinent != nullptr) {
         oldContinent->deleteTerritory(this);
     }
     this->continent = continent;
@@ -215,12 +214,21 @@ bool Territory::isNeighbour(Territory *neighbour) {
 }
 
 bool Territory::hasOwner() {
-    if(this->owner==NULL){
+    if(this->owner==nullptr){
         return false;
     }
     else{
         return true;
     }
+}
+
+void Territory::setNeutral() {
+    for(int i=0;i<this->owner->getTerritories().size();i++){
+        if(this->owner->getTerritories()[i]==this){
+            this->owner->getTerritories().erase(this->owner->getTerritories().begin()+i);
+        }
+    }
+    this->owner=nullptr;
 }
 
 Continent::Continent() {}

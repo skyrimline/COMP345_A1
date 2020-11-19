@@ -49,6 +49,7 @@ public:
     void addNeighbour(Territory* neighbour);
     bool isNeighbour(Territory* neighbour);
     bool hasOwner();
+    void setNeutral();
 };
 
 class Continent{
