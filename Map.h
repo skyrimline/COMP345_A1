@@ -50,6 +50,12 @@ public:
     bool isNeighbour(Territory* neighbour);
     bool hasOwner();
     void setNeutral();
+    friend class Deploy;
+    friend class Advance;
+    friend class Airlift;
+    friend class Bomb;
+    friend class Blockade;
+    friend class Negotiate;
 };
 
 class Continent{
