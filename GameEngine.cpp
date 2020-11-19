@@ -140,7 +140,7 @@ void GameEngine::mainGameLoop()
     {
         this->reinforcementPhase();
         this->issueOrderPhase();
-        this->exeuteOrderPhase();
+        this->executeOrderPhase();
         //check if a player owns no territories
         for (int i = 0; i < players.size(); i++)
         {
@@ -220,7 +220,7 @@ void GameEngine::issueOrderPhase()
                 cout << "How many armies you want to place in this territory?" << endl;
                 cout<<"You still have "<< players[i]->getArmies() << " left. "<< endl;
                 cin >> numberOfArmies;
-                players[i]->getTerritories()[cTerr].addArmies();
+                *players[i]->getTerritories()[cTerr]->getNumberOfArmies()+=numberOfArmies;
             }
             else{
                 cout<<"Please enter a valid choice!"<<endl;
