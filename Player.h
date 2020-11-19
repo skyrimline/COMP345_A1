@@ -29,6 +29,12 @@ public:
     void addArmies(int armies);
     bool isOwner(Continent *continent);
     bool isOwner(Territory *territory);
+    friend class Deploy;
+    friend class Advance;
+    friend class Airlift;
+    friend class Bomb;
+    friend class Blockade;
+    friend class Negotiate;
 
 private:
     string name;
