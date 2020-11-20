@@ -3,6 +3,8 @@
 #include <iostream>
 #include <random>
 #include <fstream>
+#include <cstdlib>
+#include <ctime>
 #include "Map.h"
 #include "MapLoader.h"
 #include "Player.h"
@@ -11,7 +13,7 @@
 #include "GameObservers.h"
 using namespace std;
 
-class GameEngine : public Subject
+class GameEngine /*: public Subject*/
 {
 public:
     GameEngine();

@@ -35,6 +35,7 @@ public:
     Territory();
     Territory(string name);
     Territory(string name, Continent* continent);
+    Territory(string name, Continent* continent, Player* owner);
     Territory(Territory* territory);
     ~Territory();
     string getName();
@@ -77,5 +78,5 @@ public:
     bool contains(Territory* territory);
     void print();
     void setBonus(int bonus);
-    int getBonus();
+    int* getBonus();
 };

@@ -124,8 +124,7 @@ void Deploy::execute()//implement the order
 	if (validate())
 	{
         *t->numberOfArmies += *numOfArmies;
-        *p->armies-=*numOfArmies;
-		cout <<p->getName() <<" has deployed "<<*numOfArmies<<"army(ies) to"<<t->getName()<<"." << endl;
+		cout <<p->getName() <<" has deployed "<<*numOfArmies<<" army(ies) to "<<t->getName()<<"." << endl;
 	}
 }
 

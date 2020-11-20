@@ -2,31 +2,30 @@
 #include <vector>
 using namespace std;
 
-Subject::Subject() {
-    _observers = new list<Observer*>;
-}
-
-Subject::~Subject() {
-    delete _observers;
-}
-
-void Subject::Attach(Observer* o) {
-    _observers->push_back(o);
-};
-
-void Subject::Detach(Observer* o) {
-    _observers->remove(o);
-};
-
-void Subject::Notify() {
-    list<Observer*>::iterator i = _observers->begin();
-    for (; i != _observers->end(); ++i)
-        (*i)->Update();
-};
+//Subject::Subject() {
+//    _observers = new list<Observer*>;
+//}
+//
+//Subject::~Subject() {
+//    delete _observers;
+//}
+//
+//void Subject::Attach(Observer* o) {
+//    _observers->push_back(o);
+//};
+//
+//void Subject::Detach(Observer* o) {
+//    _observers->remove(o);
+//};
+//
+//void Subject::Notify() {
+//    list<Observer*>::iterator i = _observers->begin();
+//    for (; i != _observers->end(); ++i)
+//        (*i)->Update();
+//};
 
 Player::Player()
 {
-    this->name = "";
 }
 
 Player::Player(const Player &p)
@@ -34,9 +33,9 @@ Player::Player(const Player &p)
     this->name = p.name;
 }
 
-Player::Player(std::string pName)
+Player::Player(string pName)
 {
-    this->name = pName;
+    this->name = new string(pName);
 }
 
 Player::Player(const Player &p, string pName)
@@ -45,7 +44,7 @@ Player::Player(const Player &p, string pName)
     {
         this->terrs.push_back(*it);
     }
-    this->name = pName;
+    this->name = new string(pName);
 }
 
 Player &Player::operator=(const Player &p)
@@ -62,35 +61,36 @@ ostream &operator<<(ostream &out, const Player &p)
     return out;
 }
 
-vector<Territory *> Player::toAttack()
+vector<Territory *> Player::toAttack(Territory* source)
 {
     vector<Territory *> terrAttack;
-    cout<<"Please choose the countries you would like to attack:"<<endl;
-    for(int i=1;i<=this->terrs.size();i++){
-        cout<<i<<". "<<this->terrs[i]->getName()<<endl;
+    vector<Territory*> neighbours=source->getNeighbours();
+    cout<<"Please choose a list of countries you would like to attack:"<<endl;
+    for(int i=1;i<=neighbours.size();i++){
+        cout<<i<<". "<<neighbours[i-1]->getName()<<endl;
     }
-    cout<<this->terrs.size()<<". Exit"<<endl;
+    cout<<neighbours.size()+1<<". Exit"<<endl;
     bool firstFlag=true;
     int firstIndex;
     cin>>firstIndex;
     while(firstFlag) {
-        if (firstIndex == this->terrs.size()) {
+        if (firstIndex == neighbours.size()+1) {
             cout << "You have to choose at least one territory! Please enter another number:" << endl;
-        } else if (firstIndex > this->terrs.size()) {
+        } else if (firstIndex > neighbours.size()) {
             cout << "Please enter a valid number!" << endl;
         } else {
-            terrAttack.push_back(this->terrs[firstIndex]);
+            terrAttack.push_back(neighbours[firstIndex-1]);
             firstFlag = false;
         }
     }
-    int attackIndex;
-    while(attackIndex!=this->terrs.size()){
+    int attackIndex=-1;
+    while(attackIndex!=neighbours.size()+1){
         cin>>attackIndex;
-        if(attackIndex!=this->terrs.size()){
-            terrAttack.push_back(this->terrs[attackIndex]);
-        }
-        else if (attackIndex > this->terrs.size()) {
+        if (attackIndex > neighbours.size()+1) {
             cout << "Please enter a valid number!" << endl;
+        }
+        else if(attackIndex!=neighbours.size()+1){
+            terrAttack.push_back(neighbours[attackIndex-1]);
         }
     }
     return terrAttack;
@@ -99,31 +99,31 @@ vector<Territory *> Player::toAttack()
 vector<Territory *> Player::toDefend()
 {
     vector<Territory *> terrDefend;
-    cout<<"Please choose the countries you would like to defend:"<<endl;
+    cout<<"Please choose a list of countries you would like to defend:"<<endl;
     for(int i=1;i<=this->terrs.size();i++){
-        cout<<i<<". "<<this->terrs[i]->getName()<<endl;
+        cout<<i<<". "<<this->terrs[i-1]->getName()<<endl;
     }
-    cout<<this->terrs.size()<<". Exit"<<endl;
+    cout<<this->terrs.size()+1<<". Exit"<<endl;
     bool firstFlag=true;
     int firstIndex;
     cin>>firstIndex;
     while(firstFlag) {
-        if (firstIndex == this->terrs.size()) {
+        if (firstIndex == this->terrs.size()+1) {
             cout << "You have to choose at least one territory! Please enter another number:" << endl;
-        } else if (firstIndex > this->terrs.size()) {
+        } else if (firstIndex > this->terrs.size()+1||firstIndex<1) {
             cout << "Please enter a valid number!" << endl;
         } else {
-            terrDefend.push_back(this->terrs[firstIndex]);
+            terrDefend.push_back(this->terrs[firstIndex-1]);
             firstFlag = false;
         }
     }
     int defendIndex;
-    while(defendIndex!=this->terrs.size()){
+    while(defendIndex!=this->terrs.size()+1){
         cin>>defendIndex;
-        if(defendIndex!=this->terrs.size()){
-            terrDefend.push_back(this->terrs[defendIndex]);
+        if(defendIndex!=this->terrs.size()+1){
+            terrDefend.push_back(this->terrs[defendIndex-1]);
         }
-        else if (defendIndex > this->terrs.size()) {
+        else if (defendIndex > this->terrs.size()+1||defendIndex<1) {
             cout << "Please enter a valid number!" << endl;
         }
     }
@@ -135,6 +135,7 @@ void Player::issueOrder(string s, Territory* territory, int numOfArmies)
     if(s=="deploy"){
         Deploy *deploy = new Deploy(this, territory, numOfArmies);
         orders.push_back(deploy);
+        this->armies-=numOfArmies;
     }
 }
 
@@ -142,6 +143,7 @@ void Player::issueOrder(string s, Territory * source, Territory * target, int nu
     if(s=="airlift"){
         Airlift *airlift = new Airlift(this, source, target, numOfArmies);
         this->getOrders().push_back(airlift);
+        this->armies-=numOfArmies;
     }
 }
 
@@ -183,7 +185,7 @@ string Player::toString() const
 
 string Player::getName() const
 {
-    return name;
+    return *name;
 }
 
 vector<Territory*> Player::getTerritories() {
@@ -195,11 +197,11 @@ void Player::addTerritory(Territory *territory) {
     this->terrs.push_back(territory);
 }
 
-int* Player::getArmies() {
+int Player::getArmies() {
     return armies;
 }
 void Player::addArmies(int armies) {
-    *this->armies+=armies;
+    this->armies+=armies;
 }
 
 void Player::addCards(Hand* hand)
@@ -215,18 +217,12 @@ void Player::addCards(Hand* hand)
 
 
 bool Player::isOwner(Continent *continent){
-    vector<Territory*> ownedTerrs;
-    for(int i=0; i<terrs.size();i++){
-        if(terrs[i]->getContinent()==continent){
-            ownedTerrs.push_back(terrs[i]);
+    for(Territory* t:continent->getTerritories()){
+        if(!this->isOwner(t)){
+            return false;
         }
     }
-    if(ownedTerrs.size()==continent->getTerritories().size()){
-        return true;
-    }
-    else{
-        return false;
-    }
+    return true;
 }
 
 bool Player::isOwner(Territory *territory) {

@@ -24,7 +24,7 @@ Card::Card(string t)
 }
 
 Card::Card(string t, Deck* deck, Hand* hand) {
-    for (int i = 0; i < 4; i++) //check if one of the types allowed
+    for (int i = 0; i < 5; i++) //check if one of the types allowed
     {
         if (t == types[i])
         {
@@ -220,4 +220,9 @@ Card* Hand::firstReinforcement()  {
 
 Deck *Hand::getDeck() {
     return deck;
+}
+
+Hand::Hand(Player * p, Deck *d) {
+    this->owner=p;
+    this->deck=d;
 }

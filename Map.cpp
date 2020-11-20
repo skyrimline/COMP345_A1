@@ -134,12 +134,22 @@ Territory::Territory() {}
 
 Territory::Territory(string name) {
     this->name = new string(name);
+    numberOfArmies=new int(0);
 }
 
 Territory::Territory(string name, Continent *continent) {
     this->name = new string(name);
     this->continent = continent;
     continent->addTerritory(this);
+    numberOfArmies=new int(0);
+}
+
+Territory::Territory(string name, Continent* continent, Player* owner){
+    this->name = new string(name);
+    this->continent = continent;
+    continent->addTerritory(this);
+    this->owner=owner;
+    numberOfArmies=new int(0);
 }
 
 Territory::Territory(Territory *territory) {
@@ -178,6 +188,7 @@ void Territory::setNumberOfArmies(int numberOfArmies) {
 
 void Territory::setOwner(Player *owner) {
     this->owner = owner;
+    owner->getTerritories().push_back(this);
 }
 
 void Territory::setName(string name) {
@@ -348,6 +359,6 @@ void Continent::setBonus(int bonus) {
     *this->bonus=bonus;
 }
 
-int Continent::getBonus() {
-    return *bonus;
+int* Continent::getBonus() {
+    return bonus;
 }

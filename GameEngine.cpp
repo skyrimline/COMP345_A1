@@ -1,14 +1,13 @@
 #include "GameEngine.h"
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <random>
 
 GameEngine::GameEngine()
 {
-    //set the state to "startup" initially
-    state = "Start up";
-    Notify();
-
     // define array for candidate maps
-    static const string mapName[] = {"artic", "austria-hungary", "canada", "solar"};
+    static const string mapName[] = {"artic", "austria-hungary", "solar"};
 
     // randomly select a map to open
     int mapId=0;
@@ -16,30 +15,21 @@ GameEngine::GameEngine()
         cout << "Please select a map from the list:" << endl;
         cout << "1. Artic" << endl;
         cout << "2. Austria-Hungary" << endl;
-        cout << "3. Canada" << endl;
-        cout << "4. Solar" << endl;
+        cout << "3. Solar" << endl;
         cin >> mapId;
-        if(mapId<1||mapId>4){
+        if(mapId<1||mapId>3){
             cout<<"Please enter a valid number!"<<endl;
         }
     }
-    string mapFileName = "./Map/" + mapName[mapId-1] + ".map";
+    string mapFileName = "/Users/yunwei/Desktop/Warzone/Map/" + mapName[mapId-1] + ".map";
 
     // use Maploader to load selected map
     MapLoader *ml = new MapLoader();
     gameMap = ml->readMap(mapFileName);
 
-    // verify the connectivity of selected map
-    bool isConnected = gameMap->isConnectedGraph();
-    if (!isConnected)
-    {
-        cout << "Selected map is not a connected graph." << endl;
-        cout << "Restart the game to choose another valid map" << endl;
-        exit(0);
-    }
-
     // create a deck of cards
     deck=new Deck();
+    cout<<"Deck created!"<<endl;
 
     // create 2-5 players
     int numOfPlayer=0;
@@ -53,9 +43,9 @@ GameEngine::GameEngine()
     for (int i = 0; i < numOfPlayer; ++i)
     {
         string name;
-        cout<<"Please enter a name for Player"<<i<<":"<<endl;
+        cout<<"Please enter a name for Player"<<i+1<<":"<<endl;
         cin>>name;
-        players[i] = new Player(name);
+        players.push_back( new Player(name));
         players[i]->setHand(new Hand(players[i],deck));
     }
 }
@@ -63,25 +53,19 @@ GameEngine::GameEngine()
 void GameEngine::startupPhase()
 {
     //decide the order of play
-    for (int i = 0; i < players.size() * 10; i++)
-    {
-        int randomNum1 = rand() % players.size();
-        int randomNum2 = rand() % players.size();
-        Player temp = *players[randomNum1];
-        *players[randomNum1] = *players[randomNum2];
-        *players[randomNum2] = temp;
-    }
+    shuffle(players.begin(), players.end(), std::mt19937(std::random_device()()));
     cout << "---------------------" << endl;
     cout << "The order of play is:" << endl;
     for (int i = 0; i < players.size(); i++)
     {
-        cout << i << " " << players[i] << endl;
+        cout << i+1 << " " << players[i]->getName() << endl;
     }
     //randomly assign territories
     cout << "---------------------" << endl;
     cout << "Randomly assigning territories..." << endl;
     int numOfTerri;
     bool luckyFlag;
+    //check if each players can get equal number of territories
     if (gameMap->getTerritories().size() % players.size() != 0)
     {
         numOfTerri = gameMap->getTerritories().size() / players.size() + 1;
@@ -100,18 +84,18 @@ void GameEngine::startupPhase()
             indexOfOwner = rand() % players.size();
             if (players[indexOfOwner]->getTerritories().size() < numOfTerri)
             {
-                gameMap->getTerritories()[i]->setOwner(players[indexOfOwner]);
+                players[indexOfOwner]->addTerritory(gameMap->getTerritories()[i]);
             }
         }
     }
     for (int i = 0; i < players.size(); i++)
     {
-        cout << "Player " << i << ":" << endl;
+        cout << players[i]->getName() << ":" << endl;
         for (int j = 0; j < players[i]->getTerritories().size(); j++)
         {
-            cout << "  " << j << " " << players[i]->getTerritories()[j]->getName() << endl;
+            cout << "  " << j +1<< " " << players[i]->getTerritories()[j]->getName() << endl;
         }
-        if (luckyFlag && players[i]->getTerritories().size() > numOfTerri)
+        if (luckyFlag && players[i]->getTerritories().size() > numOfTerri-1)
         {
             cout << "You are lucky! You have got one more territory than the others!" << endl;
         }
@@ -144,7 +128,7 @@ void GameEngine::startupPhase()
     cout << "Number of initial Armies: " << numOfIniArmies << endl;
     for (int i = 0; i < players.size(); i++)
     {
-        *players[i]->getArmies() += numOfIniArmies;
+        players[i]->addArmies(numOfIniArmies);
     }
 }
 
@@ -183,8 +167,8 @@ void GameEngine::reinforcementPhase()
     cout << "---------------------" << endl;
     cout << "Reinforcement phase starts..." << endl;
 
-    state = "Reinforcement Phase";
-    Notify();
+//    state = "Reinforcement Phase";
+//    Notify();
 
     for (int i = 0; i < players.size(); i++)
     {
@@ -199,7 +183,7 @@ void GameEngine::reinforcementPhase()
         {
             if (players[i]->isOwner(gameMap->getContinents()[j]))
             {
-                conArmy += gameMap->getContinents()[j]->getBonus();
+                conArmy += *gameMap->getContinents()[j]->getBonus();
             }
         }
         cout << players[i]->getName() << " got " << conArmy << " armies from owned continents." << endl;
@@ -212,8 +196,8 @@ void GameEngine::reinforcementPhase()
 
 void GameEngine::issueOrderPhase(int a)
 {
-    state = "Issue Orders Phase";
-    Notify();
+//    state = "Issue Orders Phase";
+//    Notify();
 
     switch(a) {
 
@@ -227,21 +211,30 @@ void GameEngine::issueOrderPhase(int a)
             while (players[i]->getArmies() != 0) {
                 cout << "Your territories to defend:" << endl;
                 for (int j = 1; j <= defend.size(); j++) {
-                    cout << j << ". " << defend[j]->getName() << endl;
+                    cout << j << ". " << defend[j-1]->getName() << endl;
                 }
                 cout << "You have " << players[i]->getArmies() << " spare armies left." << endl;
+                bool validFlag = false;
                 int indexTerritory;
                 cout << "Please enter the index of territory you would like to defend:" << endl;
-                cin >> indexTerritory;
+                while (!validFlag) {
+                    cin>>indexTerritory;
+                    if (indexTerritory > defend.size()) {
+                        cout << "Please enter a valid number!" << endl;
+                    }else{
+                        validFlag = true;
+                    }
+                }
                 int numOfArmies=0;
                 cout << "Please enter the number of armies you would like to use:" << endl;
-                bool validFlag = true;
-                while (validFlag) {
-                    if (numOfArmies > *players[i]->getArmies()) {
+                validFlag = false;
+                while (!validFlag) {
+                    cin>>numOfArmies;
+                    if (numOfArmies > players[i]->getArmies()) {
                         cout << "Please enter a valid number!" << endl;
                     } else {
                         players[i]->issueOrder("deploy", defend[indexTerritory-1], numOfArmies);
-                        validFlag = false;
+                        validFlag = true;
                     }
                 }
             }
@@ -394,7 +387,7 @@ void GameEngine::issueOrderPhase(int a)
                                 while (choice1 < 1 || choice1 > players[i]->getTerritories().size() ) {
                                     cout << "Please choose a source territory:" << endl;
                                     for (int j = 1; j <= players[i]->getTerritories().size(); j++) {
-                                        cout << i << ". " << players[i]->getTerritories()[j]->getName() << endl;
+                                        cout << j << ". " << players[i]->getTerritories()[j-1]->getName() << endl;
                                     }
                                     cin >> choice1;
                                     if (choice1 < 1 || choice1 > players[i]->getTerritories().size() ) {
@@ -405,44 +398,77 @@ void GameEngine::issueOrderPhase(int a)
                                 }
                                 int choice2=0;
                                 vector<Territory *> terrs;
-                                while(choice1!=1&&choice1!=2) {
+                                while(choice2!=3) {
                                     cout << "Would you like to defend or attack?" << endl;
                                     cout << "1. Defend" << endl;
                                     cout << "2. Attack" << endl;
+                                    cout<<"3. Exit"<<endl;
                                     cin >> choice2;
-                                    if (choice2 < 1 || choice2 > 2) {
+                                    if (choice2 < 1 || choice2 > 3) {
                                         cout << "Please enter a valid number!" << endl;
-                                    } else if (choice2 == 1) {
+                                    }
+                                    //choose to defend
+                                    else if (choice2 == 1) {
                                         terrs = players[i]->toDefend();
-                                    } else {
-                                        terrs = players[i]->toAttack();
+                                        cout << "Please choose a target territory:" << endl;
+                                        for (int j = 1; j <= terrs.size(); j++) {
+                                            cout << j << ". " << terrs[j-1]->getName() << endl;
+                                        }
+                                        int choice3 = 0;
+                                        while (choice3 < 1 || choice2 > terrs.size() ) {
+                                            cin >> choice3;
+                                            if (choice3 < 1 || choice3 > terrs.size() ) {
+                                                cout << "Please enter a valid number!" << endl;
+                                            } else {
+                                                target = terrs[choice3 - 1];
+                                            }
+                                        }
+                                        int numOfArmies=-1;
+                                        while(numOfArmies<0||numOfArmies>*source->getNumberOfArmies()) {
+                                            cout << "You have " << *source->getNumberOfArmies()<< " armies in the source country." << endl;
+                                            cout << "Please enter the number of armies you would like to transfer:" << endl;
+                                            cin >> numOfArmies;
+                                            if(numOfArmies<0||numOfArmies>*source->getNumberOfArmies()){
+                                                cout<<"Please enter a valid number!"<<endl;
+                                            }
+                                        }
+                                        Advance *advance = new Advance(players[i], source, target, numOfArmies);
+                                        players[i]->getOrders().push_back(advance);
+                                    }
+                                    //choose to attack
+                                    else if(choice2 == 2){
+                                        terrs = players[i]->toAttack(source);
+                                        cout << "Please choose a target territory:" << endl;
+                                        for (int j = 1; j <= terrs.size(); j++) {
+                                            cout << j << ". " << terrs[j-1]->getName() << endl;
+                                        }
+                                        int choice3 = 0;
+                                        while (true) {
+                                            cin >> choice3;
+                                            if (choice3 < 1 || choice3 > terrs.size() ) {
+                                                cout << "Please enter a valid number!" << endl;
+                                            } else {
+                                                target = terrs[choice3 - 1];
+                                                break;
+                                            }
+                                        }
+                                        int numOfArmies=-1;
+                                        while(numOfArmies<0||numOfArmies>*source->getNumberOfArmies()) {
+                                            cout << "You have " << *source->getNumberOfArmies()<< " armies in the source country." << endl;
+                                            cout << "Please enter the number of armies you would like to transfer:" << endl;
+                                            cin >> numOfArmies;
+                                            if(numOfArmies<0||numOfArmies>*source->getNumberOfArmies()){
+                                                cout<<"Please enter a valid number!"<<endl;
+                                            }
+                                        }
+                                        Advance *advance = new Advance(players[i], source, target, numOfArmies);
+                                        players[i]->getOrders().push_back(advance);
+                                    }
+                                    //exit
+                                    else if(choice2 == 3){
+                                        cout<<"Got it!"<<endl;
                                     }
                                 }
-                                cout << "Please choose a target territory:" << endl;
-                                int choice3 = 0;
-                                while (choice3 < 1 || choice2 > terrs.size() ) {
-                                    cout << "Please choose a target territory:" << endl;
-                                    for (int j = 1; j <= terrs.size(); j++) {
-                                        cout << j << ". " << terrs[j]->getName() << endl;
-                                    }
-                                    cin >> choice3;
-                                    if (choice3 < 1 || choice3 > terrs.size() ) {
-                                        cout << "Please enter a valid number!" << endl;
-                                    } else {
-                                        target = terrs[choice3 - 1];
-                                    }
-                                }
-                                int numOfArmies=-1;
-                                while(numOfArmies<0||numOfArmies>*source->getNumberOfArmies()) {
-                                    cout << "You have " << *source->getNumberOfArmies()<< " armies in the source country." << endl;
-                                    cout << "Please enter the number of armies you would like to transfer:" << endl;
-                                    cin >> numOfArmies;
-                                    if(numOfArmies<0||numOfArmies>*source->getNumberOfArmies()){
-                                        cout<<"Please enter a valid number!"<<endl;
-                                    }
-                                }
-                                Advance *advance = new Advance(players[i], source,target,numOfArmies);
-                                players[i]->getOrders().push_back(advance);
                                 break;
                             }
 
@@ -551,6 +577,7 @@ void GameEngine::issueOrderPhase(int a)
 
 void GameEngine::executeOrderPhase()
 {
+    cout<<"Executing orders..."<<endl;
     for (int i = 0; i < players.size(); i++){
         vector<Order*> orders=players[i]->getOrders();
         for(int j=0; j<orders.size();j++){
@@ -558,6 +585,7 @@ void GameEngine::executeOrderPhase()
         }
         orders.erase(orders.begin(),orders.end());
     }
+    cout<<"Orders executed!"<<endl;
 }
 
 string GameEngine::getState(){

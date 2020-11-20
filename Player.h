@@ -9,18 +9,18 @@ using namespace std;
 
 class Order;
 
-class Subject{
-public:
-    virtual void Attach(Observer* o);
-    virtual void Detach(Observer* o);
-    virtual void Notify();
-    Subject();
-    ~Subject();
-private:
-    list<Observer*> *_observers;
-};
+//class Subject{
+//public:
+//    virtual void Attach(Observer* o);
+//    virtual void Detach(Observer* o);
+//    virtual void Notify();
+//    Subject();
+//    ~Subject();
+//private:
+//    list<Observer*> *_observers;
+//};
 
-class Player:public Subject
+class Player/*:public Subject*/
 {
 public:
     Player(); // default constructor
@@ -29,14 +29,14 @@ public:
     Player(const Player &, string);                        // copy constructor
     Player &operator=(const Player &);                     // assignment operator
     friend ostream &operator<<(ostream &, const Player &); // stream insertion operator
-    vector<Territory *> toAttack();
+    vector<Territory *> toAttack(Territory* source);
     vector<Territory *> toDefend();
     string getName() const;
     string toString() const;
     vector<Territory *> getTerritories();
     void addTerritory(Territory *territory);
     void addCards(Hand *hand);
-    int *getArmies();
+    int getArmies();
     void addArmies(int armies);
     bool isOwner(Continent *continent);
     bool isOwner(Territory *territory);
@@ -55,10 +55,10 @@ public:
     void setHand(Hand* hand);
 
 private:
-    string name;
+    string* name;
     vector<Territory *> terrs;
     Hand* hand;
     vector<Order *> orders;
-    int *armies;
-    string* phase;
+    int armies;
+//    string* phase;
 };
