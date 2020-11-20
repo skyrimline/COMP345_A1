@@ -20,7 +20,21 @@ Card::Card(string t)
 			return;
 		}
 	}
-	cout << "Error, type not recognized";
+	cout << "Error, type not recognized!"<<endl;
+}
+
+Card::Card(string t, Deck* deck, Hand* hand) {
+    for (int i = 0; i < 4; i++) //check if one of the types allowed
+    {
+        if (t == types[i])
+        {
+            type = t;
+            deck=deck;
+            hand=hand;
+            return;
+        }
+    }
+    cout << "Error, type not recognized!"<<endl;
 }
 
 Card::Card(const Card &card2) // copy constructor
