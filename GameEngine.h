@@ -18,13 +18,13 @@ public:
     void startupPhase();
     void mainGameLoop();
     void reinforcementPhase();
-    void issueOrderPhase();
+    void issueOrderPhase(int);
     void executeOrderPhase();
     string getState();
 
 private:
     string state;
-    Map gameMap;
+    Map *gameMap;
     vector<Player *> players;
-    Hand *cards[];
+    Deck* deck;
 };

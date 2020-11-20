@@ -92,14 +92,16 @@ Deploy::Deploy()
 {
 }
 
-Deploy::Deploy(string name)
+Deploy::Deploy(Player* p, Territory* territory, int numOfArmies)
 {
-	this->name = name;
+    this->p=p;
+	this->t=territory;
+	this->numOfArmies=new int(numOfArmies);
 }
 
 Deploy::Deploy(const Deploy & deploy)
 {
-	*this = deploy;
+//	*this = deploy;
 }
 
 Deploy & Deploy::operator<<(const Deploy & p)
@@ -107,7 +109,7 @@ Deploy & Deploy::operator<<(const Deploy & p)
 	return *this;
 }
 
-bool Deploy::validate(Player* p, Territory* t)//check if it is one kind of order
+bool Deploy::validate()//check if it is one kind of order
 {	if (p->isOwner(t))
 		return true;
 	else
@@ -117,12 +119,13 @@ bool Deploy::validate(Player* p, Territory* t)//check if it is one kind of order
 	}
 }	
 
-void Deploy::execute(Player* p, Territory* t, int num)//implement the order
+void Deploy::execute()//implement the order
 {
-	if (validate(p, t))
-	{ 
-		cout << "Player has deployed army." << endl;
-		t->numberOfArmies += num;
+	if (validate())
+	{
+        *t->numberOfArmies += *numOfArmies;
+        *p->armies-=*numOfArmies;
+		cout <<p->getName() <<" has deployed "<<*numOfArmies<<"army(ies) to"<<t->getName()<<"." << endl;
 	}
 }
 
@@ -136,14 +139,17 @@ Advance::Advance()
 {
 }
 
-Advance::Advance(string name)
+Advance::Advance(Player* p, Territory* t, Territory* t1, int numOfArmies)
 {
-	this->name = name;
+    this->p=p;
+	this->source = t;
+	this->target=t1;
+	this->numOfArmies=new int(numOfArmies);
 }
 
 Advance::Advance(const Advance & advance)
 {
-	*this = advance;
+//	*this = advance;
 }
 
 Advance & Advance::operator<<(const Advance & p)
@@ -156,17 +162,11 @@ void Advance::sticker()
 	cout << "Advance";
 }
 
-	
-
-bool Advance::validate(Player* p, Territory* t, Territory* t1)
+bool Advance::validate()
 {
-	if (!t->isNeighbour(t1))
-	{ 
-		cout << "invalid order " << endl;
-		return false;
-	}
-	else if (p->isOwner(t))
-		return true;
+	if (p->isOwner(source)&&source->isNeighbour(target)) {
+        return true;
+    }
 	else
 	{
 		cout << "invalid order " << endl;
@@ -174,65 +174,65 @@ bool Advance::validate(Player* p, Territory* t, Territory* t1)
 	}
 }
 
-void Advance::execute(Player* p, Territory* t, Territory* t1, int num)
+void Advance::execute()
 {
-	if (validate(p, t, t1))
+	if (validate())
 	{
-		if (p->isOwner(t) && p->isOwner(t1))
+		if (p->isOwner(target))
 		{
-			cout << "Player has advanced army to an friendly territory " << endl;
-			t->numberOfArmies -= num;
-			t1->numberOfArmies += num;
+			cout << "You have advanced army to an friendly territory." << endl;
+			*source->numberOfArmies -= *numOfArmies;
+			*target->numberOfArmies += *numOfArmies;
 		}
 		else
 		{
-			t->numberOfArmies -= num;
-			int attackingforce = num;
-			if (!t1->hasOwner())
-			{
-				p->addTerritory(t1);
-				cout << "Player has occupied a neutral territory " << endl;
-			}
-			else
-			{
-				cout << "Player has advanced army to enemies territory " << endl;
-				cout << "Battle starts " << endl;
-				for (int i = 0; i < num; i++)
+            cout << "You are attacking another territory!" << endl;
+			*source->numberOfArmies -= *numOfArmies;
+			int attackingForce = *numOfArmies;
+				for (int i = 0; i < *numOfArmies; i++)
 				{
 					int attack_chance, defend_chance;
 					attack_chance = rand() % 100 + 1;
 					defend_chance = rand() % 100 + 1;
 					if (attack_chance <= 60)
-						t1->numberOfArmies -= 1;
+						*target->numberOfArmies -= 1;
 					if (defend_chance <= 70)
-						attackingforce -= 1;
+						attackingForce -= 1;
 					
 				}
-				
-				if (t1->numberOfArmies == 0)
+				if (target->numberOfArmies == 0)
 				{
-					p->addTerritory(t1);
-					t1->numberOfArmies += attackingforce;
-					//p.addCards();
-
-					cout << "Player has conquered enemies' territory and gets a new card" << endl;
+					p->addTerritory(target);
+					*target->numberOfArmies += attackingForce;
+					p->getHand()->getCardsVector().push_back(p->getHand()->getDeck()->draw());
+					cout << "You have conquered an enemy's territory and get a new card" << endl;
 				}
+				else {
+				    cout<<"You have lost the battle."<<endl;
+                }
 			}
 			
 		}
 	}
-	
+
+Territory *Advance::getSource()  {
+    return source;
 }
-	
+
+Territory *Advance::getTarget() {
+    return target;
+}
+
 
 //default constructor//constructor//copy constructor	
 Bomb::Bomb()
 {
 }
 
-Bomb::Bomb(string name)
+Bomb::Bomb(Player* p, Territory* t)
 {
-	this->name = name;
+	this->p = p;
+	this->target=t;
 }
 
 Bomb::Bomb(const Bomb & bomb)
@@ -245,11 +245,11 @@ Bomb & Bomb::operator=(const Bomb & p)
 	return *this;
 }
 
-bool Bomb::validate(Player* p, Territory* t)
+bool Bomb::validate()
 {
-	if (p->isOwner(t))
+	if (p->isOwner(target))
 	{
-		cout << "invalid order, cannot bomb friendly territory" << endl;
+		cout << "Invalid order, cannot bomb friendly territory!" << endl;
 		return false;
 	}
 	else
@@ -259,13 +259,13 @@ bool Bomb::validate(Player* p, Territory* t)
 	}
 }
 
-void Bomb::execute(Player* p, Territory* t)
+void Bomb::execute()
 {
-	if (validate(p, t))
+	if (validate())
 	{
-		int* num = t->getNumberOfArmies();
-		t->setNumberOfArmies(*num / 2);
-		cout << "Player has bombed enemies' territory, half of the defensive armies are lost " << endl;
+		int* num = target->getNumberOfArmies();
+		target->setNumberOfArmies(*num / 2);
+		cout << "You have bombed an enemy's territory, half of the defensive armies are lost." << endl;
 	}
 	
 }
@@ -280,9 +280,10 @@ Blockade::Blockade()
 {
 }
 
-Blockade::Blockade(string name)
+Blockade::Blockade(Player* p, Territory* t)
 {
-	this->name = name;
+    this->p=p;
+	this->t = t;
 }
 
 Blockade::Blockade(const Blockade & blockade)
@@ -295,7 +296,7 @@ Blockade & Blockade::operator=(const Blockade & p)
 	return *this;
 }
 
-bool Blockade::validate(Player* p, Territory* t)
+bool Blockade::validate()
 {
 	if (p->isOwner(t))
 		return true;
@@ -307,14 +308,14 @@ bool Blockade::validate(Player* p, Territory* t)
 		
 }
 
-void Blockade::execute(Player* p, Territory* t)
+void Blockade::execute()
 {
-	if (validate(p, t))
+	if (validate())
 	{	
 		int* num = t->getNumberOfArmies();
 		t->setNumberOfArmies(*num * 2);
-		cout << "Player has blockaded territory." << endl;
-		//add a function to turn neutral
+		t->setNeutral();
+		cout << "You have blockaded this territory." << endl;
 	}
 }
 void Blockade::sticker()
@@ -328,9 +329,12 @@ Airlift::Airlift()
 {
 }
 
-Airlift::Airlift(string name)
+Airlift::Airlift(Player* p, Territory* territory, Territory* territory1, int numOfArmies)
 {
-	this->name = name;
+    this->p=p;
+	this->source=territory;
+	this->target=territory1;
+	this->numOfArmies=new int(numOfArmies);
 }
 
 Airlift::Airlift(const Airlift & airlift)
@@ -343,9 +347,9 @@ Airlift & Airlift::operator=(const Airlift & p)
 	return *this;
 }
 
-bool Airlift::validate(Player* p, Territory* t, Territory* t1)
+bool Airlift::validate()
 {
-	if ((!p->isOwner(t)) && (!p->isOwner(t1))	)
+	if ((!p->isOwner(source)))
 	{
 		cout << "invalid order " << endl;
 		return false;
@@ -356,63 +360,58 @@ bool Airlift::validate(Player* p, Territory* t, Territory* t1)
 	}
 }
 
-void Airlift::execute(Player* p, Territory* t, Territory* t1, int num)
+void Airlift::execute()
 {
-	if (validate(p, t, t1))
+	if (validate())
 	{
-		if (p->isOwner(t) && p->isOwner(t1))
-		{
-			cout << "Player has airlifted army to an friendly territory " << endl;
-			t->numberOfArmies -= num;
-			t1->numberOfArmies += num;
-		}
-		else
-		{
-			if (p->isOwner(t))
-			{
-				t->numberOfArmies -= num;
-				int attackingforce = num;
-				if (!t1->hasOwner())
-				{
-					p->addTerritory(t1);
-					cout << "Player has occupied a neutral territory " << endl;
-				}
-				else
-				{
-					cout << "Player has airlifted army to enemies territory " << endl;
-					cout << "Battle starts " << endl;
-					for (int i = 0; i < num; i++)
-					{
-						int attack_chance, defend_chance;
-						attack_chance = rand() % 100 + 1;
-						defend_chance = rand() % 100 + 1;
-						if (attack_chance <= 60)
-							t1->numberOfArmies -= 1;
-						if (defend_chance <= 70)
-							attackingforce -= 1;
+        if (p->isOwner(target))
+        {
+            cout << "You have airlifted army to a friendly territory." << endl;
+            *source->numberOfArmies -= *numOfArmies;
+            *target->numberOfArmies += *numOfArmies;
+        }
+        else
+        {
+            cout << "You are attacking another territory!" << endl;
+            *source->numberOfArmies -= *numOfArmies;
+            int attackingForce = *numOfArmies;
+            for (int i = 0; i < *numOfArmies; i++)
+            {
+                int attack_chance, defend_chance;
+                attack_chance = rand() % 100 + 1;
+                defend_chance = rand() % 100 + 1;
+                if (attack_chance <= 60)
+                    *target->numberOfArmies -= 1;
+                if (defend_chance <= 70)
+                    attackingForce -= 1;
+            }
+            if (target->numberOfArmies == 0)
+            {
+                p->addTerritory(target);
+                *target->numberOfArmies += attackingForce;
+                p->getHand()->getCardsVector().push_back(p->getHand()->getDeck()->draw());
+                cout << "You have conquered an enemy's territory and get a new card" << endl;
+            }
+            else {
+                cout<<"You have lost the battle."<<endl;
+            }
+        }
 
-					}
-
-					if (t1->numberOfArmies == 0)
-					{
-						p->addTerritory(t1);
-						t1->numberOfArmies += attackingforce;
-						//p.addCards();
-
-						cout << "Player has conquered enemies' territory and gets a new card" << endl;
-					}
-				}
-			}
-			
-
-		}
 	}
 }
+
 void Airlift::sticker()
 {
 	cout << "Airlift";
 }
 
+Territory *Airlift::getSource() {
+    return source;
+}
+
+Territory *Airlift::getTarget() {
+    return target;
+}
 
 
 //default constructor//constructor//copy constructor
@@ -420,9 +419,10 @@ Negotiate::Negotiate()
 {
 }
 
-Negotiate::Negotiate(string name)
+Negotiate::Negotiate(Player* p1, Player* p2)
 {
-	this->name = name;
+	this->p1 = p1;
+	this->p2=p2;
 }
 
 Negotiate::Negotiate(const Negotiate & negotiate)
@@ -435,7 +435,7 @@ Negotiate & Negotiate::operator=(const Negotiate & p)
 	return *this;
 }
 
-bool Negotiate::validate(Player* p1, Player* p2)
+bool Negotiate::validate()
 {
 	if (p1 == p2)
 	{
@@ -448,13 +448,42 @@ bool Negotiate::validate(Player* p1, Player* p2)
 	}
 }
 
-void Negotiate::execute(Player* p1, Player* p2)
+void Negotiate::execute()
 {
-	if (validate(p1, p2))
+	if (validate())
 	{
-		cout << "Player has started negotiation." << endl;
+		cout << "Player has started negotiation, and all attacks have been removed." << endl;
+//		for(int i=0;i<p1->getOrders().size();i++){
+//		    if(p1->getOrders()[i]->getType()=="advance"){
+//		        Advance* advance=dynamic_cast<Advance*>(p1->getOrders()[i]);
+//		        if(advance->getTarget()->getOwner()==p2){
+//                    p1->getOrders().erase(p1->getOrders().begin()+i);
+//		        }
+//		    }
+//		    else if(p1->getOrders()[i]->getType()=="airlift"){
+//                Airlift* advance=dynamic_cast<Airlift*>(p1->getOrders()[i]);
+//                if(advance->getTarget()->getOwner()==p2){
+//                    p1->getOrders().erase(p1->getOrders().begin()+i);
+//                }
+//            }
+//		}
+//        for(int i=0;i<p2->getOrders().size();i++){
+//            if(p2->getOrders()[i]->getType()=="advance"){
+//                Advance* advance=dynamic_cast<Advance*>(p2->getOrders()[i]);
+//                if(advance->getTarget()->getOwner()==p1){
+//                    p2->getOrders().erase(p2->getOrders().begin()+i);
+//                }
+//            }
+//            else if(p2->getOrders()[i]->getType()=="airlift"){
+//                Airlift* advance=dynamic_cast<Airlift*>(p2->getOrders()[i]);
+//                if(advance->getTarget()->getOwner()==p1){
+//                    p2->getOrders().erase(p2->getOrders().begin()+i);
+//                }
+//            }
+//        }
 	}
 }
+
 void Negotiate::sticker()
 {
 	cout << "Negotiate";
