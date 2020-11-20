@@ -65,9 +65,9 @@ vector<Territory *> Player::toDefend()
     return terrDefend;
 }
 
-void Player::issueOrder(string)
+void Player::issueOrder(string str)
 {
-    Order *ord = new Order();
+    Order *ord = new Order(str);
     orders.push_back(ord);
 }
 
@@ -94,52 +94,63 @@ string Player::getName() const
     return name;
 }
 
-vector<Territory*> Player::getTerritories() {
+vector<Territory *> Player::getTerritories()
+{
     return terrs;
 }
 
-void Player::addTerritory(Territory *territory) {
+void Player::addTerritory(Territory *territory)
+{
     territory->setOwner(this);
     this->terrs.push_back(territory);
 }
 
-int* Player::getArmies() {
+int *Player::getArmies()
+{
     return armies;
 }
-void Player::addArmies(int armies) {
-    *this->armies+=armies;
+void Player::addArmies(int armies)
+{
+    *this->armies += armies;
 }
 
-void Player::addCards(Hand* hand)
+void Player::addCards(Hand *hand)
 {
     vector<Card> tempCardsVector = hand->getCardsVector();
-    while (!tempCardsVector.empty()) {
-        Card* tempCard = new Card(tempCardsVector.back());
+    while (!tempCardsVector.empty())
+    {
+        Card *tempCard = new Card(tempCardsVector.back());
         tempCardsVector.pop_back();
         cards.push_back(tempCard);
     }
-    
 }
 
-
-bool Player::isOwner(Continent *continent){
-    vector<Territory*> ownedTerrs;
-    for(int i=0; i<terrs.size();i++){
-        if(terrs[i]->getContinent()==continent){
+bool Player::isOwner(Continent *continent)
+{
+    vector<Territory *> ownedTerrs;
+    for (int i = 0; i < terrs.size(); i++)
+    {
+        if (terrs[i]->getContinent() == continent)
+        {
             ownedTerrs.push_back(terrs[i]);
         }
     }
-    if(ownedTerrs.size()==continent->getTerritories().size()){
+    if (ownedTerrs.size() == continent->getTerritories().size())
+    {
         return true;
     }
-    else{
+    else
+    {
         return false;
     }
 }
 
-bool Player::isOwner(Territory *territory) {
-    for(int i=0; i<this->terrs.size();i++){
-        if(territory==terrs[i]){
+bool Player::isOwner(Territory *territory)
+{
+    for (int i = 0; i < this->terrs.size(); i++)
+    {
+        if (territory == terrs[i])
+        {
             return true;
         }
     }

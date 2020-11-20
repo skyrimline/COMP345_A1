@@ -24,7 +24,7 @@ public:
 
 private:
     string state;
-    Map *gameMap;
+    Map gameMap;
     vector<Player *> players;
     Hand *cards[];
 };
