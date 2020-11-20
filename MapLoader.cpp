@@ -6,7 +6,7 @@
 #include <vector>
 using namespace std;
 
-Map MapLoader::readMap(string mapFile) {
+Map * MapLoader::readMap(string mapFile) {
 		try {
 			Map map;
 			ifstream file(mapFile);
@@ -14,17 +14,22 @@ Map MapLoader::readMap(string mapFile) {
 			vector<string> territoryList;
 			string str;
 			//moving to continents
-			while (getline(file, str) && str != "[continents]\r") {}
-			while (getline(file, str) && str != "\r") {
-				string continent = str.substr(0, str.find(" "));
-				string bonus = str.substr(str.find(" "),str.find(" "));
-				int intBonus = stoi(bonus);
-				continentsList.push_back(continent);
-				map.addContinent(new Continent(continent, intBonus));
+			while (getline(file, str) && str != "[continents]") {}
+			while (getline(file, str) && str != "") {
+                stringstream st(str);
+                string w;
+                vector<string> LSplit;
+                while (getline(st, w, ' ')) {
+                    LSplit.push_back(w);
+                }
+                continentsList.push_back(LSplit[0]);
+                int* bonus = new int(stoi(LSplit[1]));
+                cout<<*bonus<<endl;
+                map.addContinent(new Continent(LSplit[0], bonus));
 			}
 			//moving to Territory
-			while (getline(file, str) && str != "[countries]\r") {}
-			while (getline(file, str) && str != "\r") {
+			while (getline(file, str) && str != "[countries]") {}
+			while (getline(file, str) && str != "") {
 				stringstream st(str);
 				string w;
 				vector<string> LSplit;
@@ -35,9 +40,10 @@ Map MapLoader::readMap(string mapFile) {
 				int continentIndex = stoi(LSplit[2]) - 1;
 				map.addTerritory(new Territory(LSplit[1], map.getContinents()[continentIndex]));
 			}
+
 			//moving to Borders
-			while (getline(file, str) && str != "[borders]\r") {}
-			while (getline(file, str) && str != "\r") {
+			while (getline(file, str) && str != "[borders]") {}
+			while (getline(file, str) && str != "") {
 				stringstream st(str);
 				string w;
 				vector<string> LSplit;
@@ -50,7 +56,7 @@ Map MapLoader::readMap(string mapFile) {
 			}
 			if (map.validate()) {
 			    map.print();
-				return map;
+				return &map;
 			}
 			else {
 				cerr << "This map is invalid!" << endl;

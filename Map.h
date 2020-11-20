@@ -65,7 +65,7 @@ private:
     vector<Territory*> territories;
 public:
     Continent();
-    Continent(string name, int bonus);
+    Continent(string name, int* bonus);
     Continent(Continent* continent);
     ~Continent();
     string getName();

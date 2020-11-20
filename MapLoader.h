@@ -6,7 +6,7 @@ using namespace std;
 
 class MapLoader {
 public:
-	Map readMap(string mapFile);
+	Map* readMap(string mapFile);
 };
 
 #endif //MapLoader_H
