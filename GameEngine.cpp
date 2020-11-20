@@ -579,15 +579,18 @@ void GameEngine::executeOrderPhase()
 {
     cout<<"Executing orders..."<<endl;
     for (int i = 0; i < players.size(); i++){
-        vector<Order*> orders=players[i]->getOrders();
-        for(int j=0; j<orders.size();j++){
-            orders[j]->execute();
+        for(int j=0; j<players[i]->getOrders().size();j++){
+            players[i]->getOrders()[j]->execute();
         }
-        orders.erase(orders.begin(),orders.end());
+        players[i]->getOrders().erase(players[i]->getOrders().begin(),players[i]->getOrders().end());
     }
     cout<<"Orders executed!"<<endl;
 }
 
 string GameEngine::getState(){
+
+}
+
+GameEngine::~GameEngine() {
 
 }

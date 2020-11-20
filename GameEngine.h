@@ -17,6 +17,7 @@ class GameEngine /*: public Subject*/
 {
 public:
     GameEngine();
+    ~GameEngine();
     void startupPhase();
     void mainGameLoop();
     void reinforcementPhase();

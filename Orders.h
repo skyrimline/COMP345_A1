@@ -18,7 +18,7 @@ public:
 	//virtual bool validate();
 	virtual void execute();
 	virtual void sticker();
-	string getType();
+//	string getType();
 	
 private:
 	//string name;
@@ -31,6 +31,7 @@ class OrderList
 public:
 	list <Order> orderlist;
 	OrderList();
+	~OrderList();
 	OrderList(string name);
 	OrderList(const OrderList& OrderList);
 	OrderList& operator << (const OrderList &p);
@@ -46,6 +47,7 @@ class Deploy : public Order
 {
 public:
 	Deploy();
+	~Deploy();
 	Deploy(Player* p, Territory*, int);
 	Deploy(const Deploy& Deploy);
 	Deploy& operator << (const Deploy &p);
@@ -63,6 +65,7 @@ class Advance : public Order
 {
 public:
 	Advance();
+	~Advance();
 	Advance(Player* p, Territory* t, Territory* t1, int numOfArmies);
 	Advance(const Advance& Advance);
 	Advance& operator << (const Advance &p);
@@ -84,6 +87,7 @@ class Bomb : public Order
 {
 public:
 	Bomb();
+	~Bomb();
 	Bomb(Player* p, Territory* t);
 	Bomb(const Bomb& Bomb);
 	Bomb& operator = (const Bomb &p);
@@ -100,6 +104,7 @@ class Blockade : public Order
 {
 public:
 	Blockade();
+	~Blockade();
 	Blockade(Player* p, Territory* t);
 	Blockade(const Blockade& Blockade);
 	Blockade& operator = (const Blockade &p);
@@ -116,6 +121,7 @@ class Airlift : public Order
 {
 public:
 	Airlift();
+	~Airlift();
 	Airlift(Player* p,Territory* t, Territory* t1, int numOfArmies);
 	Airlift(const Airlift& Airlift);
 	Airlift& operator = (const Airlift &p);
@@ -136,6 +142,7 @@ class Negotiate : public Order
 {
 public:
 	Negotiate();
+	~Negotiate();
 	Negotiate(Player* p1, Player* p2);
 	Negotiate(const Negotiate& Negotiate);
 	Negotiate& operator = (const Negotiate &p);

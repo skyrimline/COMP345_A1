@@ -53,6 +53,11 @@ void Order::sticker()
 OrderList::OrderList()
 {
 }
+
+OrderList::~OrderList() {
+
+}
+
 OrderList::OrderList(string name)
 {
 	this->name = name;
@@ -69,8 +74,6 @@ OrderList & OrderList::operator<<(const OrderList & p)
 	return *this;
 }
 
-
-
 void OrderList::move(Order& p_order)
 {
 	orderlist.push_back(p_order);
@@ -84,8 +87,6 @@ void OrderList::remove()
 	orderlist.pop_back();
 	cout << "Player has removed the last Order from the OrderList" << endl;
 }
-	
-
 
 //default constructor//constructor//copy constructor
 Deploy::Deploy()
@@ -131,6 +132,10 @@ void Deploy::execute()//implement the order
 void Deploy::sticker()
 {
 	cout << "Deploy";
+}
+
+Deploy::~Deploy() {
+
 }
 
 //default constructor//constructor//copy constructor
@@ -179,7 +184,7 @@ void Advance::execute()
 	{
 		if (p->isOwner(target))
 		{
-			cout << "You have advanced army to an friendly territory." << endl;
+			cout << "You have advanced army to a friendly territory." << endl;
 			*source->numberOfArmies -= *numOfArmies;
 			*target->numberOfArmies += *numOfArmies;
 		}
@@ -220,6 +225,10 @@ Territory *Advance::getSource()  {
 
 Territory *Advance::getTarget() {
     return target;
+}
+
+Advance::~Advance() {
+
 }
 
 
@@ -273,6 +282,10 @@ void Bomb::sticker()
 	cout << "Bomb";
 }
 
+Bomb::~Bomb() {
+
+}
+
 
 //default constructor//constructor//copy constructor
 Blockade::Blockade()
@@ -320,6 +333,10 @@ void Blockade::execute()
 void Blockade::sticker()
 {
 	cout << "Blockade";
+}
+
+Blockade::~Blockade() {
+
 }
 
 
@@ -412,6 +429,10 @@ Territory *Airlift::getTarget() {
     return target;
 }
 
+Airlift::~Airlift() {
+
+}
+
 
 //default constructor//constructor//copy constructor
 Negotiate::Negotiate()
@@ -486,6 +507,10 @@ void Negotiate::execute()
 void Negotiate::sticker()
 {
 	cout << "Negotiate";
+}
+
+Negotiate::~Negotiate() {
+
 }
 
 

@@ -9,18 +9,7 @@ using namespace std;
 
 class Order;
 
-//class Subject{
-//public:
-//    virtual void Attach(Observer* o);
-//    virtual void Detach(Observer* o);
-//    virtual void Notify();
-//    Subject();
-//    ~Subject();
-//private:
-//    list<Observer*> *_observers;
-//};
-
-class Player/*:public Subject*/
+class Player
 {
 public:
     Player(); // default constructor
@@ -53,6 +42,7 @@ public:
     vector<Order*> getOrders();
     Hand* getHand();
     void setHand(Hand* hand);
+    ~Player();
 
 private:
     string* name;

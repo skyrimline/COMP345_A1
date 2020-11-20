@@ -68,3 +68,11 @@ Map * MapLoader::readMap(string mapFile) {
 		}
 	
 }
+
+MapLoader::~MapLoader() {
+
+}
+
+MapLoader::MapLoader() {
+
+}

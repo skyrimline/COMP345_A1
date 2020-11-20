@@ -67,6 +67,10 @@ void Card::play() {
 
 }
 
+Card::~Card() {
+
+}
+
 //////DECK DECK DECK///////
 
 Deck::Deck()
@@ -115,6 +119,10 @@ Card* Deck::draw()
 void Deck::add(Card* newCard)
 {
 	cardsVector->push_back(newCard);
+}
+
+Deck::~Deck() {
+
 }
 
 //////// HAND HAND HAND //////////
@@ -225,4 +233,8 @@ Deck *Hand::getDeck() {
 Hand::Hand(Player * p, Deck *d) {
     this->owner=p;
     this->deck=d;
+}
+
+Hand::~Hand() {
+
 }

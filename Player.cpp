@@ -246,3 +246,6 @@ void Player::setHand(Hand* hand) {
     this->hand=hand;
 }
 
+Player::~Player(){
+
+}

@@ -16,7 +16,8 @@ class Card
 public:
 	static const string types[];
 
-	Card();													 //default constructor
+	Card();												 //default constructor
+	~Card();
 	Card(string t);											 //constructor
     Card(string t, Deck* deck, Hand* hand);
     Card(const Card &card2);								 //copy constructor
@@ -34,6 +35,7 @@ class Deck
 {
 public:
 	Deck();													 //default constructor
+	~Deck();
 	Deck(const Deck &deck2);								 //copy constructor
 	friend ostream &operator<<(ostream &out, const Deck &d); //stream insertion operator
 	//Card getCardAt(int index);
@@ -48,6 +50,7 @@ class Hand
 {
 public:
 	Hand();													 //constructor
+	~Hand();
 	Hand(Player*, Deck*);
 	Hand(const Hand &hand2);								 //copy constructor
 	friend ostream &operator<<(ostream &out, const Hand &h); //stream insertion operator
