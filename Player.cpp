@@ -2,28 +2,6 @@
 #include <vector>
 using namespace std;
 
-//Subject::Subject() {
-//    _observers = new list<Observer*>;
-//}
-//
-//Subject::~Subject() {
-//    delete _observers;
-//}
-//
-//void Subject::Attach(Observer* o) {
-//    _observers->push_back(o);
-//};
-//
-//void Subject::Detach(Observer* o) {
-//    _observers->remove(o);
-//};
-//
-//void Subject::Notify() {
-//    list<Observer*>::iterator i = _observers->begin();
-//    for (; i != _observers->end(); ++i)
-//        (*i)->Update();
-//};
-
 Player::Player()
 {
 }
@@ -36,6 +14,7 @@ Player::Player(const Player &p)
 Player::Player(string pName)
 {
     this->name = new string(pName);
+    armies=new int(0);
 }
 
 Player::Player(const Player &p, string pName)
@@ -135,7 +114,7 @@ void Player::issueOrder(string s, Territory* territory, int numOfArmies)
     if(s=="deploy"){
         Deploy *deploy = new Deploy(this, territory, numOfArmies);
         orders.push_back(deploy);
-        this->armies-=numOfArmies;
+        *this->armies-=numOfArmies;
     }
 }
 
@@ -143,7 +122,10 @@ void Player::issueOrder(string s, Territory * source, Territory * target, int nu
     if(s=="airlift"){
         Airlift *airlift = new Airlift(this, source, target, numOfArmies);
         this->getOrders().push_back(airlift);
-        this->armies-=numOfArmies;
+    }
+    else if(s=="advance"){
+        Advance *advance=new Advance(this, source, target, numOfArmies);
+        orders.push_back(advance);
     }
 }
 
@@ -197,11 +179,12 @@ void Player::addTerritory(Territory *territory) {
     this->terrs.push_back(territory);
 }
 
-int Player::getArmies() {
+int* Player::getArmies() {
     return armies;
 }
+
 void Player::addArmies(int armies) {
-    this->armies+=armies;
+    *this->armies+=armies;
 }
 
 void Player::addCards(Hand* hand)
@@ -248,4 +231,8 @@ void Player::setHand(Hand* hand) {
 
 Player::~Player(){
 
+}
+
+void Player::clearOrders() {
+    orders.erase(orders.begin(),orders.end());
 }

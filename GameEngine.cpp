@@ -206,14 +206,14 @@ void GameEngine::issueOrderPhase(int a)
         cout << "All players need to deploy all their armies in hand first!" << endl;
         for (int i = 0; i < players.size(); i++) {
             cout << players[i]->getName() << ", it's your turn!" << endl;
-            cout << "You have " << players[i]->getArmies() << " spare armies in total." << endl;
+            cout << "You have " << *players[i]->getArmies() << " spare armies in total." << endl;
             vector<Territory *> defend = players[i]->toDefend();
-            while (players[i]->getArmies() != 0) {
+            while (*players[i]->getArmies() != 0) {
                 cout << "Your territories to defend:" << endl;
                 for (int j = 1; j <= defend.size(); j++) {
                     cout << j << ". " << defend[j-1]->getName() << endl;
                 }
-                cout << "You have " << players[i]->getArmies() << " spare armies left." << endl;
+                cout << "You have " << *players[i]->getArmies() << " spare armies left." << endl;
                 bool validFlag = false;
                 int indexTerritory;
                 cout << "Please enter the index of territory you would like to defend:" << endl;
@@ -230,7 +230,7 @@ void GameEngine::issueOrderPhase(int a)
                 validFlag = false;
                 while (!validFlag) {
                     cin>>numOfArmies;
-                    if (numOfArmies > players[i]->getArmies()) {
+                    if (numOfArmies > *players[i]->getArmies()) {
                         cout << "Please enter a valid number!" << endl;
                     } else {
                         players[i]->issueOrder("deploy", defend[indexTerritory-1], numOfArmies);
@@ -432,8 +432,7 @@ void GameEngine::issueOrderPhase(int a)
                                                 cout<<"Please enter a valid number!"<<endl;
                                             }
                                         }
-                                        Advance *advance = new Advance(players[i], source, target, numOfArmies);
-                                        players[i]->getOrders().push_back(advance);
+                                        players[i]->issueOrder("advance", source, target, numOfArmies);
                                     }
                                     //choose to attack
                                     else if(choice2 == 2){
@@ -461,8 +460,7 @@ void GameEngine::issueOrderPhase(int a)
                                                 cout<<"Please enter a valid number!"<<endl;
                                             }
                                         }
-                                        Advance *advance = new Advance(players[i], source, target, numOfArmies);
-                                        players[i]->getOrders().push_back(advance);
+                                        players[i]->issueOrder("advance", source, target, numOfArmies);
                                     }
                                     //exit
                                     else if(choice2 == 3){
@@ -577,14 +575,16 @@ void GameEngine::issueOrderPhase(int a)
 
 void GameEngine::executeOrderPhase()
 {
+    cout<<"-------------------"<<endl;
     cout<<"Executing orders..."<<endl;
     for (int i = 0; i < players.size(); i++){
         for(int j=0; j<players[i]->getOrders().size();j++){
             players[i]->getOrders()[j]->execute();
         }
-        players[i]->getOrders().erase(players[i]->getOrders().begin(),players[i]->getOrders().end());
+        players[i]->clearOrders();
     }
     cout<<"Orders executed!"<<endl;
+    cout<<"-------------------"<<endl;
 }
 
 string GameEngine::getState(){

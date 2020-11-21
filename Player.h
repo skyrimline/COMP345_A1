@@ -25,7 +25,7 @@ public:
     vector<Territory *> getTerritories();
     void addTerritory(Territory *territory);
     void addCards(Hand *hand);
-    int getArmies();
+    int* getArmies();
     void addArmies(int armies);
     bool isOwner(Continent *continent);
     bool isOwner(Territory *territory);
@@ -42,13 +42,13 @@ public:
     vector<Order*> getOrders();
     Hand* getHand();
     void setHand(Hand* hand);
+    void clearOrders();
     ~Player();
 
 private:
     string* name;
     vector<Territory *> terrs;
     Hand* hand;
-    vector<Order *> orders;
-    int armies;
-//    string* phase;
+    vector<Order *> orders;//change to OrderList later
+    int* armies;
 };
