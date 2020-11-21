@@ -184,13 +184,13 @@ void Advance::execute()
 	{
 		if (p->isOwner(target))
 		{
-			cout << "You have advanced army to a friendly territory." << endl;
+			cout <<p->getName()<< " has advanced "<< *numOfArmies <<" armies from "<<source->getName()<<" to " << target->getName()<<"."<< endl;
 			*source->numberOfArmies -= *numOfArmies;
 			*target->numberOfArmies += *numOfArmies;
 		}
 		else
 		{
-            cout << "You are attacking another territory!" << endl;
+            cout <<p->getName()<< " is attacking "<<target->getName()<<" from "<<source->getName()<<" with "<< *numOfArmies <<" armies!" << endl;
 			*source->numberOfArmies -= *numOfArmies;
 			int attackingForce = *numOfArmies;
 				for (int i = 0; i < *numOfArmies; i++)
@@ -208,11 +208,13 @@ void Advance::execute()
 				{
 					p->addTerritory(target);
 					*target->numberOfArmies += attackingForce;
-					p->getHand()->getCardsVector().push_back(p->getHand()->getDeck()->draw());
-					cout << "You have conquered an enemy's territory and get a new card" << endl;
+					Card* newCard=p->getHand()->getDeck()->draw();
+					p->getHand()->getCardsVector().push_back(newCard);
+					cout<<p->getName()<< " has conquered "<<target->getName()<<" and get a new card" << endl;
+					cout<<newCard;
 				}
 				else {
-				    cout<<"You have lost the battle."<<endl;
+				    cout<<p->getName()<<" has lost the battle."<<endl;
                 }
 			}
 			

@@ -60,7 +60,7 @@ Map * MapLoader::readMap(string mapFile) {
 			}
 			else {
 				cerr << "This map is invalid!" << endl;
-				exit(0);
+				return nullptr;
 			}
 		}
 		catch (...) {

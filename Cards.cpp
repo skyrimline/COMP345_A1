@@ -125,6 +125,10 @@ Deck::~Deck() {
 
 }
 
+vector<Card *> Deck::getCards() {
+    return *cardsVector;
+}
+
 //////// HAND HAND HAND //////////
 
 Hand::Hand(){} //default constructor

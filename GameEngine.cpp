@@ -10,26 +10,34 @@ GameEngine::GameEngine()
     static const string mapName[] = {"artic", "austria-hungary", "solar"};
 
     // randomly select a map to open
-    int mapId=0;
-    while(mapId<1||mapId>4) {
-        cout << "Please select a map from the list:" << endl;
-        cout << "1. Artic" << endl;
-        cout << "2. Austria-Hungary" << endl;
-        cout << "3. Solar" << endl;
-        cin >> mapId;
-        if(mapId<1||mapId>3){
-            cout<<"Please enter a valid number!"<<endl;
-        }
-    }
-    string mapFileName = "/Users/yunwei/Desktop/Warzone/Map/" + mapName[mapId-1] + ".map";
-
-    // use Maploader to load selected map
+    gameMap= nullptr;
     MapLoader *ml = new MapLoader();
-    gameMap = ml->readMap(mapFileName);
+    while(gameMap==nullptr){
+        int mapId=0;
+        while(mapId<1||mapId>4) {
+            cout << "Please select a map from the list:" << endl;
+            cout << "1. Artic" << endl;
+            cout << "2. Austria-Hungary" << endl;
+            cout << "3. Solar" << endl;
+            cin >> mapId;
+            if(mapId<1||mapId>3){
+                cout<<"Please enter a valid number!"<<endl;
+            }
+        }
+        string mapFileName = "/Users/yunwei/Desktop/Warzone/Map/" + mapName[mapId-1] + ".map";
+        // use Maploader to load selected map
+        gameMap = ml->readMap(mapFileName);
+    }
 
-    // create a deck of cards
+    // create a deck of cards and display
+    cout<<"--------------"<<endl;
     deck=new Deck();
-    cout<<"Deck created!"<<endl;
+    cout<<"Deck created:"<<endl;
+    for(Card* c:deck->getCards()){
+        cout<<*c;
+    }
+    cout<<"--------------"<<endl;
+
 
     // create 2-5 players
     int numOfPlayer=0;
@@ -219,7 +227,7 @@ void GameEngine::issueOrderPhase(int a)
                 cout << "Please enter the index of territory you would like to defend:" << endl;
                 while (!validFlag) {
                     cin>>indexTerritory;
-                    if (indexTerritory > defend.size()) {
+                    if (indexTerritory > defend.size()||indexTerritory<1) {
                         cout << "Please enter a valid number!" << endl;
                     }else{
                         validFlag = true;
@@ -230,7 +238,7 @@ void GameEngine::issueOrderPhase(int a)
                 validFlag = false;
                 while (!validFlag) {
                     cin>>numOfArmies;
-                    if (numOfArmies > *players[i]->getArmies()) {
+                    if (numOfArmies > *players[i]->getArmies()||numOfArmies<0) {
                         cout << "Please enter a valid number!" << endl;
                     } else {
                         players[i]->issueOrder("deploy", defend[indexTerritory-1], numOfArmies);

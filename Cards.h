@@ -41,6 +41,7 @@ public:
 	//Card getCardAt(int index);
 	Card* draw();
 	void add(Card* newCard);
+	vector<Card*> getCards();
 
 private:
 	vector<Card*> *cardsVector;

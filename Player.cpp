@@ -51,8 +51,8 @@ vector<Territory *> Player::toAttack(Territory* source)
     cout<<neighbours.size()+1<<". Exit"<<endl;
     bool firstFlag=true;
     int firstIndex;
-    cin>>firstIndex;
     while(firstFlag) {
+        cin>>firstIndex;
         if (firstIndex == neighbours.size()+1) {
             cout << "You have to choose at least one territory! Please enter another number:" << endl;
         } else if (firstIndex > neighbours.size()) {
@@ -85,8 +85,8 @@ vector<Territory *> Player::toDefend()
     cout<<this->terrs.size()+1<<". Exit"<<endl;
     bool firstFlag=true;
     int firstIndex;
-    cin>>firstIndex;
     while(firstFlag) {
+        cin>>firstIndex;
         if (firstIndex == this->terrs.size()+1) {
             cout << "You have to choose at least one territory! Please enter another number:" << endl;
         } else if (firstIndex > this->terrs.size()+1||firstIndex<1) {
