@@ -1,11 +1,14 @@
 #pragma once
 #include <iostream>
 #include "Player.h"
+#include "Cards.h"
+#include "Map.h"
+#include "Orders.h"
 using namespace std;
 
 class PlayerStrategy {
 public:
-    virtual void issueOrder(Player* p) = 0;
+    virtual void issueOrder(Player* p, int i) = 0;
     virtual void toAttack(Player* p) = 0;
     virtual void toDefend(Player* p) = 0;
 };
