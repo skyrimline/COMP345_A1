@@ -4,39 +4,58 @@
 #include "Cards.h"
 #include "Map.h"
 #include "Orders.h"
+#include "GameEngine.h"
 using namespace std;
 
 class PlayerStrategy {
+protected:
+    GameEngine* game;
+    Player* player;
 public:
-    virtual void issueOrder(Player* p, int i) = 0;
-    virtual void toAttack(Player* p) = 0;
-    virtual void toDefend(Player* p) = 0;
+    PlayerStrategy();
+    PlayerStrategy(GameEngine* game, Player* player);
+    ~PlayerStrategy();
+    virtual void issueOrder() = 0;
+    virtual void toAttack() = 0;
+    virtual void toDefend(int i) = 0;
 };
 
 class HumanPlayerStrategy:public PlayerStrategy{
 public:
-    void issueOrder(Player* player, int i);
-    void toAttack(Player* player);
-    void toDefend(Player* player);
+    HumanPlayerStrategy();
+    HumanPlayerStrategy(GameEngine* game, Player* player);
+    ~HumanPlayerStrategy();
+    void issueOrder();
+    void toAttack();
+    void toDefend(int i);
 };
 
 class AggressivePlayerStrategy:public PlayerStrategy{
 public:
-    void issueOrder(Player* player, int i);
-    void toAttack(Player* player);
-    void toDefend(Player* player);
+    AggressivePlayerStrategy();
+    AggressivePlayerStrategy(GameEngine* game, Player* player);
+    ~AggressivePlayerStrategy();
+    void issueOrder();
+    void toAttack();
+    void toDefend(int i);
 };
 
 class BenevolentPlayerStrategy:public PlayerStrategy{
 public:
-    void issueOrder(Player* player, int i);
-    void toAttack(Player* player);
-    void toDefend(Player* player);
+    BenevolentPlayerStrategy();
+    BenevolentPlayerStrategy(GameEngine* game, Player* player);
+    ~BenevolentPlayerStrategy();
+    void issueOrder();
+    void toAttack();
+    void toDefend(int i);
 };
 
 class NeutralPlayerStrategy:public PlayerStrategy{
 public:
-    void issueOrder(Player* player, int i);
-    void toAttack(Player* player);
-    void toDefend(Player* player);
+    NeutralPlayerStrategy();
+    NeutralPlayerStrategy(GameEngine* game, Player* player);
+    ~NeutralPlayerStrategy();
+    void issueOrder();
+    void toAttack();
+    void toDefend(int i);
 };

@@ -49,10 +49,10 @@ public:
     //Player strategy methods
     void setStrategy(PlayerStrategy* s);
     void toAttack();
-    void toDefend();
-    //use the int i to let the game engine knows whether players should deploy orders or other orders
-    //if i=1, deploy armies; i=2, play cards
-    void issueOrder(int i);
+    //use the int i to let the game engine knows whether players should deploy in-hand armies or advance armies to defend
+    //if i=1, deploy; i=2, advance
+    void toDefend(int i);
+    void issueOrder();
 
 private:
     string* name;

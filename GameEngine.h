@@ -29,6 +29,8 @@ public:
     GameEngine();
     ~GameEngine();
     string getState();
+    Map* getMap();
+    vector<Player *> getPlayers();
     void startupPhase();
     void mainGameLoop();
     void reinforcementPhase();

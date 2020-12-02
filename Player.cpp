@@ -241,13 +241,13 @@ void Player::setStrategy(PlayerStrategy *s) {
 }
 
 void Player::toAttack() {
-    strategy->toAttack(this);
+    strategy->toAttack();
 }
 
-void Player::toDefend() {
-    strategy->toDefend(this);
+void Player::toDefend(int i) {
+    strategy->toDefend(i);
 }
 
-void Player::issueOrder(int i) {
-    strategy->issueOrder(this,i);
+void Player::issueOrder() {
+    strategy->issueOrder();
 }
