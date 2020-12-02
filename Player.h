@@ -9,6 +9,7 @@
 using namespace std;
 
 class Order;
+class PlayerStrategy;
 
 class Player
 {
@@ -49,7 +50,9 @@ public:
     void setStrategy(PlayerStrategy* s);
     void toAttack();
     void toDefend();
-    void issueOrder(int i);//use the int i to let the game engine knows whether players should deploy orders or other orders
+    //use the int i to let the game engine knows whether players should deploy orders or other orders
+    //if i=1, deploy armies; i=2, play cards
+    void issueOrder(int i);
 
 private:
     string* name;

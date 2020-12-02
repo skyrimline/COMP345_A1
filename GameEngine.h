@@ -13,21 +13,31 @@
 #include "GameObservers.h"
 using namespace std;
 
-class GameEngine /*: public Subject*/
-{
+class Subject {
+public:
+    virtual void Attach(Observer* o);
+    virtual void Detach(Observer* o);
+    virtual void Notify();
+    Subject();
+    ~Subject();
+private:
+    list<Observer*>* _observers;
+};
+
+class GameEngine: public Subject{
 public:
     GameEngine();
     ~GameEngine();
+    string getState();
     void startupPhase();
     void mainGameLoop();
     void reinforcementPhase();
-    void issueOrderPhase(int);
+    void issueOrderPhase(int i);
     void executeOrderPhase();
-    string getState();
 
 private:
-    string state;
     Map *gameMap;
     vector<Player *> players;
     Deck* deck;
+    string state;
 };
