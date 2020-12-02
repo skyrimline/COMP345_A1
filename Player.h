@@ -5,6 +5,7 @@
 #include "Cards.h"
 #include "Orders.h"
 #include "GameObservers.h"
+#include "PlayerStrategy.h"
 using namespace std;
 
 class Order;
@@ -18,8 +19,6 @@ public:
     Player(const Player &, string);                        // copy constructor
     Player &operator=(const Player &);                     // assignment operator
     friend ostream &operator<<(ostream &, const Player &); // stream insertion operator
-    vector<Territory *> toAttack(Territory* source);
-    vector<Territory *> toDefend();
     string getName() const;
     string toString() const;
     vector<Territory *> getTerritories();
@@ -35,15 +34,22 @@ public:
     friend class Bomb;
     friend class Blockade;
     friend class Negotiate;
-    void issueOrder(string, Territory*, int);
-    void issueOrder(string, Territory*, Territory*, int);
-    void issueOrder(string, Territory*);
-    void issueOrder(string, Player*);
     vector<Order*> getOrders();
     Hand* getHand();
     void setHand(Hand* hand);
     void clearOrders();
     ~Player();
+//    vector<Territory *> toAttack(Territory* source);
+//    vector<Territory *> toDefend();
+//    void issueOrder(string, Territory*, int);
+//    void issueOrder(string, Territory*, Territory*, int);
+//    void issueOrder(string, Territory*);
+//    void issueOrder(string, Player*);
+    //Player strategy methods
+    void setStrategy(PlayerStrategy* s);
+    void toAttack();
+    void toDefend();
+    void issueOrder(int i);//use the int i to let the game engine knows whether players should deploy orders or other orders
 
 private:
     string* name;
@@ -51,4 +57,5 @@ private:
     Hand* hand;
     vector<Order *> orders;//change to OrderList later
     int* armies;
+    PlayerStrategy* strategy;
 };
