@@ -454,3 +454,89 @@ void AggressivePlayerStrategy::issueOrder() {
     player->toDefend(2);
     player->toAttack();
 }
+
+void BenevolentPlayerStrategy::toAttack() {
+    cout << "Benevolent player doesn't attack" << endl;
+
+}
+
+void BenevolentPlayerStrategy::toDefend(int i) {
+
+    switch (i) {
+
+        //deploy armies in reinforcement  pool
+        case 1:
+            //cout << "You have " << *player->getArmies() << " spare armies in total." << endl;
+            while (*player->getArmies() != 0) {
+
+                //Find the weakest territory to add armies to it
+                int lowestNumberOfArmies = 100000; //random high number to initialize before checking the lowest number of armies within territories
+                int weakestTerritoryIndex = 0;
+                for (int i = 0; i < player->getTerritories().size(); i++)
+                {
+                    if (player->getTerritories()[i]->getNumberOfArmies() < player->getTerritories()[lowestNumberOfArmies]->getNumberOfArmies())
+                    {
+                        weakestTerritoryIndex = i;
+                    }
+
+                }
+
+                if (*player->getArmies() > 5) {
+                    player->getOrders().push_back(new Deploy(player, player->getTerritories()[weakestTerritoryIndex], 5));
+                }
+                else
+                {
+                    player->getOrders().push_back(new Deploy(player, player->getTerritories()[weakestTerritoryIndex], *player->getArmies()));
+                }
+
+
+            }
+            break;
+
+            //advance armies to defend territories
+        case 2:
+
+            bool keepMovingArmies = true;
+
+            while (keepMovingArmies) {
+
+                //Find the weakest territory to add armies to it
+                int weakestTerritoryIndex = 0;
+                for (int i = 0; i < player->getTerritories().size(); i++)
+                {
+                    if (player->getTerritories()[i]->getNumberOfArmies() < player->getTerritories()[weakestTerritoryIndex]->getNumberOfArmies())
+                    {
+                        weakestTerritoryIndex = i;
+                    }
+
+                }
+
+                //Find the strongest territory
+                int strongestTerritoryIndex = 0;
+                for (int i = 0; i < player->getTerritories().size(); i++)
+                {
+                    if (player->getTerritories()[i]->getNumberOfArmies() > player->getTerritories()[strongestTerritoryIndex]->getNumberOfArmies())
+                    {
+                        strongestTerritoryIndex = i;
+                    }
+                }
+
+                //If the difference between the strongest and weakest is too much, advance a few army units from the strongest to the weakest
+                if ((player->getTerritories()[strongestTerritoryIndex]->getNumberOfArmies() - player->getTerritories()[weakestTerritoryIndex]->getNumberOfArmies()) > 5)
+                {
+                    player->getOrders().push_back(new Advance(player, player->getTerritories()[strongestTerritoryIndex], player->getTerritories()[weakestTerritoryIndex], 3));
+                }
+                else {
+                    keepMovingArmies = false; //if all the territories have around the same number of armies, stop moving armies
+                }
+
+
+            }
+            break;
+    }
+}
+
+void BenevolentPlayerStrategy::issueOrder() {
+    player->toDefend(1);
+    player->toDefend(2);
+}
