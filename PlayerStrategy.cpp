@@ -276,7 +276,7 @@ void HumanPlayerStrategy::toAttack() {
                     cout << "Please enter a valid number!" << endl;
                 }
             }
-            player->getOrders().push_back(new Advance(player, source, target, numOfArmies);
+            player->getOrders().push_back(new Advance(player, source, target, numOfArmies));
         }
         else if(choice==2){
             cout<<"Got it!"<<endl;
@@ -375,7 +375,7 @@ void HumanPlayerStrategy::toDefend(int i) {
                             cout << "Please enter a valid number!" << endl;
                         }
                     }
-                    player->getOrders().push_back(new Advance(player, source, target, numOfArmies);
+                    player->getOrders().push_back(new Advance(player, source, target, numOfArmies));
                 }
                 else if(choice==2){
                     cout<<"Got it!"<<endl;
