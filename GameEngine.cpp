@@ -131,6 +131,35 @@ vector<Player *> GameEngine::getPlayers() {
     return players;
 }
 
+void GameEngine::mainGameLoop(){
+    while (true)
+    {
+        this->reinforcementPhase();
+        this->issueOrderPhase(1);
+        this->executeOrderPhase();
+        this->issueOrderPhase(2);
+        this->executeOrderPhase();
+        //check if a player owns no territories
+        for (int i = 0; i < players.size(); i++)
+        {
+            if (players[i]->getTerritories().size() == 0)
+            {
+                cout << players[i]->getName() << " has no territories left and is removed from the game!" << endl;
+                players.erase(players.begin() + i);
+            }
+        }
+        //checks if a player has won the game
+        for (int i = 0; i < players.size(); i++)
+        {
+            if (players[i]->getTerritories().size() == this->gameMap->getTerritories().size())
+            {
+                cout << "Congratulations! " << players[i]->getName() << " has won the game!" << endl;
+                exit(0);
+            }
+        }
+    }
+}
+
 void GameEngine::startupPhase()
 {
     this->state="Strat Up Phase";
@@ -192,21 +221,21 @@ void GameEngine::startupPhase()
     int numOfIniArmies;
     switch (players.size())
     {
-    case 2:
-        numOfIniArmies = 40;
-        break;
+        case 2:
+            numOfIniArmies = 40;
+            break;
 
-    case 3:
-        numOfIniArmies = 35;
-        break;
+        case 3:
+            numOfIniArmies = 35;
+            break;
 
-    case 4:
-        numOfIniArmies = 30;
-        break;
+        case 4:
+            numOfIniArmies = 30;
+            break;
 
-    case 5:
-        numOfIniArmies = 25;
-        break;
+        case 5:
+            numOfIniArmies = 25;
+            break;
     }
     cout << "Number of initial Armies: " << numOfIniArmies << endl;
     for (int i = 0; i < players.size(); i++)
@@ -215,38 +244,9 @@ void GameEngine::startupPhase()
     }
 }
 
-void GameEngine::mainGameLoop()
-{
-    while (true)
-    {
-        this->reinforcementPhase();
-        this->issueOrderPhase(1);
-        this->executeOrderPhase();
-        this->issueOrderPhase(2);
-        this->executeOrderPhase();
-        //check if a player owns no territories
-        for (int i = 0; i < players.size(); i++)
-        {
-            if (players[i]->getTerritories().size() == 0)
-            {
-                cout << players[i]->getName() << " has no territories left and is removed from the game!" << endl;
-                players.erase(players.begin() + i);
-            }
-        }
-        //checks if a player has won the game
-        for (int i = 0; i < players.size(); i++)
-        {
-            if (players[i]->getTerritories().size() == this->gameMap->getTerritories().size())
-            {
-                cout << "Congratulations! " << players[i]->getName() << " has won the game!" << endl;
-                exit(0);
-            }
-        }
-    }
-}
-
-void GameEngine::reinforcementPhase()
-{
+void GameEngine::reinforcementPhase(){
+    this->state="Reinforcement Phase";
+    Notify();
     cout << "---------------------" << endl;
     cout << "Reinforcement phase starts..." << endl;
     for (int i = 0; i < players.size(); i++)
@@ -274,22 +274,26 @@ void GameEngine::reinforcementPhase()
 }
 
 void GameEngine::issueOrderPhase(int a){
+    this->state="Issue order Phase";
+    Notify();
     for(Player* player:players){
+        cout << player->getName() << ", it's your turn!" << endl;
         switch(a) {
             case 1:
-                player->toDefend(1);//only need to choose a target to put all the in han armies
+                player->toDefend(a);//only need to choose a target to put all the in hand armies
                 break;
             case 2:
                 player->issueOrder();
                 player->toAttack();
-                player->toDefend(2);//need to choose both source and target(advance)
+                player->toDefend(a);//need to choose both source and target(advance)
                 break;
         }
     }
 }
 
-void GameEngine::executeOrderPhase()
-{
+void GameEngine::executeOrderPhase(){
+    this->state="Execute Order Phase";
+    Notify();
     cout<<"-------------------"<<endl;
     cout<<"Executing orders..."<<endl;
     for (int i = 0; i < players.size(); i++){

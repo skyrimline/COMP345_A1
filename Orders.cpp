@@ -124,7 +124,7 @@ void Deploy::execute()//implement the order
 {
 	if (validate())
 	{
-        *t->numberOfArmies += *numOfArmies;
+        *t->getNumberOfArmies() += *numOfArmies;
 		cout <<p->getName() <<" has deployed "<<*numOfArmies<<" army(ies) to "<<t->getName()<<"." << endl;
 	}
 }
@@ -185,13 +185,13 @@ void Advance::execute()
 		if (p->isOwner(target))
 		{
 			cout <<p->getName()<< " has advanced "<< *numOfArmies <<" armies from "<<source->getName()<<" to " << target->getName()<<"."<< endl;
-			*source->numberOfArmies -= *numOfArmies;
-			*target->numberOfArmies += *numOfArmies;
+			*source->getNumberOfArmies() -= *numOfArmies;
+			*target->getNumberOfArmies() += *numOfArmies;
 		}
 		else
 		{
             cout <<p->getName()<< " is attacking "<<target->getName()<<" from "<<source->getName()<<" with "<< *numOfArmies <<" armies!" << endl;
-			*source->numberOfArmies -= *numOfArmies;
+			*source->getNumberOfArmies() -= *numOfArmies;
 			int attackingForce = *numOfArmies;
 				for (int i = 0; i < *numOfArmies; i++)
 				{
@@ -199,15 +199,15 @@ void Advance::execute()
 					attack_chance = rand() % 100 + 1;
 					defend_chance = rand() % 100 + 1;
 					if (attack_chance <= 60)
-						*target->numberOfArmies -= 1;
+						*target->getNumberOfArmies() -= 1;
 					if (defend_chance <= 70)
 						attackingForce -= 1;
 					
 				}
-				if (target->numberOfArmies == 0)
+				if (target->getNumberOfArmies() == 0)
 				{
 					p->addTerritory(target);
-					*target->numberOfArmies += attackingForce;
+					*target->getNumberOfArmies() += attackingForce;
 					Card* newCard=p->getHand()->getDeck()->draw();
 					p->getHand()->getCardsVector().push_back(newCard);
 					cout<<p->getName()<< " has conquered "<<target->getName()<<" and get a new card" << endl;
@@ -385,13 +385,13 @@ void Airlift::execute()
         if (p->isOwner(target))
         {
             cout << "You have airlifted army to a friendly territory." << endl;
-            *source->numberOfArmies -= *numOfArmies;
-            *target->numberOfArmies += *numOfArmies;
+            *source->getNumberOfArmies() -= *numOfArmies;
+            *target->getNumberOfArmies() += *numOfArmies;
         }
         else
         {
             cout << "You are attacking another territory!" << endl;
-            *source->numberOfArmies -= *numOfArmies;
+            *source->getNumberOfArmies() -= *numOfArmies;
             int attackingForce = *numOfArmies;
             for (int i = 0; i < *numOfArmies; i++)
             {
@@ -399,14 +399,14 @@ void Airlift::execute()
                 attack_chance = rand() % 100 + 1;
                 defend_chance = rand() % 100 + 1;
                 if (attack_chance <= 60)
-                    *target->numberOfArmies -= 1;
+                    *target->getNumberOfArmies() -= 1;
                 if (defend_chance <= 70)
                     attackingForce -= 1;
             }
-            if (target->numberOfArmies == 0)
+            if (target->getNumberOfArmies() == 0)
             {
                 p->addTerritory(target);
-                *target->numberOfArmies += attackingForce;
+                *target->getNumberOfArmies() += attackingForce;
                 p->getHand()->getCardsVector().push_back(p->getHand()->getDeck()->draw());
                 cout << "You have conquered an enemy's territory and get a new card" << endl;
             }

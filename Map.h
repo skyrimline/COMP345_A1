@@ -42,6 +42,7 @@ public:
     Player getOwner();
     vector<Territory*> getNeighbours();
     vector<Territory *> getEnemyNeighbours();
+    vector<Territory *> getFriendlyNeighbours();
     int* getNumberOfArmies();
     Continent* getContinent();
     void setName(string name);
