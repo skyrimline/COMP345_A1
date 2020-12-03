@@ -182,6 +182,16 @@ vector<Territory *> Territory::getNeighbours() {
     return neighbours;
 }
 
+vector<Territory *> Territory::getEnemyNeighbours() {
+    vector<Territory *> enemies;
+    for(Territory* terri:neighbours){
+        if(terri->owner!=this->owner){
+            enemies.push_back(terri);
+        }
+    }
+    return enemies;
+}
+
 void Territory::setNumberOfArmies(int numberOfArmies) {
     this->numberOfArmies = new int(numberOfArmies);
 }

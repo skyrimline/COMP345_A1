@@ -41,6 +41,7 @@ public:
     string getName();
     Player getOwner();
     vector<Territory*> getNeighbours();
+    vector<Territory *> getEnemyNeighbours();
     int* getNumberOfArmies();
     Continent* getContinent();
     void setName(string name);
@@ -51,12 +52,6 @@ public:
     bool isNeighbour(Territory* neighbour);
     bool hasOwner();
     void setNeutral();
-    friend class Deploy;
-    friend class Advance;
-    friend class Airlift;
-    friend class Bomb;
-    friend class Blockade;
-    friend class Negotiate;
 };
 
 class Continent{
