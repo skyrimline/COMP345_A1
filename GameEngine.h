@@ -11,20 +11,21 @@
 #include "Cards.h"
 #include "Orders.h"
 #include "GameObservers.h"
+#include "PlayerStrategy.h"
 using namespace std;
 
-class Subject {
-public:
-    virtual void Attach(Observer* o);
-    virtual void Detach(Observer* o);
-    virtual void Notify();
-    Subject();
-    ~Subject();
-private:
-    list<Observer*>* _observers;
-};
+//class Subject {
+//public:
+//    virtual void Attach(Observer* o);
+//    virtual void Detach(Observer* o);
+//    virtual void Notify();
+//    Subject();
+//    ~Subject();
+//private:
+//    list<Observer*>* _observers;
+//};
 
-class GameEngine: public Subject{
+class GameEngine/*: public Subject*/{
 public:
     GameEngine();
     ~GameEngine();

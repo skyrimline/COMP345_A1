@@ -4,27 +4,27 @@
 #include <ctime>
 #include <random>
 
-Subject::Subject() {
-    _observers = new list<Observer*>;
-}
-
-Subject::~Subject() {
-    delete _observers;
-}
-
-void Subject::Attach(Observer* o) {
-    _observers->push_back(o);
-};
-
-void Subject::Detach(Observer* o) {
-    _observers->remove(o);
-};
-
-void Subject::Notify() {
-    list<Observer*>::iterator i = _observers->begin();
-    for (; i != _observers->end(); ++i)
-        (*i)->Update();
-};
+//Subject::Subject() {
+//    _observers = new list<Observer*>;
+//}
+//
+//Subject::~Subject() {
+//    delete _observers;
+//}
+//
+//void Subject::Attach(Observer* o) {
+//    _observers->push_back(o);
+//};
+//
+//void Subject::Detach(Observer* o) {
+//    _observers->remove(o);
+//};
+//
+//void Subject::Notify() {
+//    list<Observer*>::iterator i = _observers->begin();
+//    for (; i != _observers->end(); ++i)
+//        (*i)->Update();
+//};
 
 GameEngine::GameEngine()
 {
@@ -162,8 +162,8 @@ void GameEngine::mainGameLoop(){
 
 void GameEngine::startupPhase()
 {
-    this->state="Strat Up Phase";
-    Notify();
+//    this->state="Strat Up Phase";
+//    Notify();
     //decide the order of play
     shuffle(players.begin(), players.end(), std::mt19937(std::random_device()()));
     cout << "---------------------" << endl;
@@ -245,8 +245,8 @@ void GameEngine::startupPhase()
 }
 
 void GameEngine::reinforcementPhase(){
-    this->state="Reinforcement Phase";
-    Notify();
+//    this->state="Reinforcement Phase";
+//    Notify();
     cout << "---------------------" << endl;
     cout << "Reinforcement phase starts..." << endl;
     for (int i = 0; i < players.size(); i++)
@@ -274,8 +274,8 @@ void GameEngine::reinforcementPhase(){
 }
 
 void GameEngine::issueOrderPhase(int a){
-    this->state="Issue order Phase";
-    Notify();
+//    this->state="Issue order Phase";
+//    Notify();
     for(Player* player:players){
         cout << player->getName() << ", it's your turn!" << endl;
         switch(a) {
@@ -292,8 +292,8 @@ void GameEngine::issueOrderPhase(int a){
 }
 
 void GameEngine::executeOrderPhase(){
-    this->state="Execute Order Phase";
-    Notify();
+//    this->state="Execute Order Phase";
+//    Notify();
     cout<<"-------------------"<<endl;
     cout<<"Executing orders..."<<endl;
     for (int i = 0; i < players.size(); i++){
