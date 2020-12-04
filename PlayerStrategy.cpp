@@ -419,12 +419,44 @@ void NeutralPlayerStrategy::toDefend(int i) {
 }
 
 void AggressivePlayerStrategy::toDefend(int i) {
-    cout<<"Since "+player->getName()+" is aggressive, he will not defend at all."<<endl;
+    int priority = 0;
+    bool checkTerritoryArmies = false;
+    vector<Territory*> tl = player->getTerritories();
+    vector<Territory*> tlHaveEnemy;
+    switch(i){
+        case 1:
+            for(int i=0;i<tl.size();i++){
+                if(tl[i]->getNumberOfArmies()!=0){
+                    checkTerritoryArmies = true;
+                }
+            }//check whether the player should deploy randomly
+
+            for(int i;i<tl.size();i++){
+                vector<Territory*> temp = tl[i]->getEnemyNeighbours();
+                if(temp.size()!=0){
+                    tlHaveEnemy.push_back(tl[i]);
+                }
+            }
+
+            if(checkTerritoryArmies){
+                int randNum=rand()%(tlHaveEnemy.size()+1);
+                player->getOrders().push_back(new Deploy(player,tlHaveEnemy[randNum],*player->getArmies()));
+            }//random deploy
+            else{
+                for(int i=1;i<tl.size();i++){
+                    if(tl[i]->getNumberOfArmies()>tl[priority]->getNumberOfArmies()){
+                        priority = i;
+                    }
+                }
+                player->getOrders().push_back(new Deploy(player,tl[priority],*player->getArmies()));
+            }//priority deploy
+        case 2:
+            cout<<"Since "+player->getName()+" is aggressive, he will not defend at all."<<endl;
+    }
 }
 
 void AggressivePlayerStrategy::toAttack() {
     int priority = 0;
-    bool checkTerritoryArmies = false;
     vector<Territory*> tl = player->getTerritories();
     vector<Territory*> tlHaveEnemy;
     vector<Territory*> target;
@@ -436,24 +468,11 @@ void AggressivePlayerStrategy::toAttack() {
         }
     }
 
-    for(int i=0;i<tl.size();i++){
-        if(tl[i]->getNumberOfArmies()!=0){
-            checkTerritoryArmies = true;
+    for(int i=1;i<tl.size();i++){
+        if(tl[i]->getNumberOfArmies()>tl[priority]->getNumberOfArmies()){
+            priority = i;
         }
-    }//check whether the player should deploy randomly
-
-    if(checkTerritoryArmies){
-        int randNum=rand()%(tlHaveEnemy.size()+1);
-        player->getOrders().push_back(new Deploy(player,tlHaveEnemy[randNum],*player->getArmies()));
-    }//random deploy
-    else{
-        for(int i=1;i<tl.size();i++){
-            if(tl[i]->getNumberOfArmies()>tl[priority]->getNumberOfArmies()){
-                priority = i;
-            }
-        }
-        player->getOrders().push_back(new Deploy(player,tlHaveEnemy[priority],*player->getArmies()));
-    }//priority deploy
+    }
 
     //start to attack
     target = tl[priority]->getEnemyNeighbours();
@@ -462,8 +481,7 @@ void AggressivePlayerStrategy::toAttack() {
 }
 
 void AggressivePlayerStrategy::issueOrder() {
-    player->toDefend(2);
-    player->toAttack();
+    cout<<player->getName()<< " will not use card since it can only attack." <<endl;
 }
 
 void BenevolentPlayerStrategy::toAttack() {
