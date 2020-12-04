@@ -76,3 +76,70 @@ MapLoader::~MapLoader() {
 MapLoader::MapLoader() {
 
 }
+
+ConquestFileReader::ConquestFileReader()
+{
+}
+
+ConquestFileReader::~ConquestFileReader()
+{
+}
+
+Map * ConquestFileReader::readConquestFile(string conquestFile)
+{
+	return nullptr;
+}
+
+ConquestFileReaderAdapter::ConquestFileReaderAdapter(ConquestFileReader cfreader)
+{
+	con = cfreader;
+	
+}
+
+
+
+
+
+conquestFile::conquestFile()
+{
+}
+
+conquestFile::conquestFile(conquestFile * conFile)
+{
+}
+
+conquestFile::~conquestFile()
+{
+}
+
+vector<Continent*> conquestFile::getContinents()
+{
+	return vector<Continent*>();
+}
+
+vector<Territory*> conquestFile::getTerritories()
+{
+	return vector<Territory*>();
+}
+
+void conquestFile::addContinent(Continent * continent)
+{
+}
+
+void conquestFile::addTerritory(Territory * territory)
+{
+}
+
+void conquestFile::print()
+{
+}
+
+bool conquestFile::isConnectedGraph()
+{
+	return false;
+}
+
+bool conquestFile::validate()
+{
+	return false;
+}
