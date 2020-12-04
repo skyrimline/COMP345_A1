@@ -18,6 +18,18 @@ AggressivePlayerStrategy::AggressivePlayerStrategy(GameEngine *game, Player* pla
 
 AggressivePlayerStrategy::~AggressivePlayerStrategy() {}
 
+BenevolentPlayerStrategy::BenevolentPlayerStrategy() :PlayerStrategy(){}
+
+BenevolentPlayerStrategy::BenevolentPlayerStrategy(GameEngine *game, Player* player): PlayerStrategy(game, player) {}
+
+BenevolentPlayerStrategy::~BenevolentPlayerStrategy() {}
+
+NeutralPlayerStrategy::NeutralPlayerStrategy() :PlayerStrategy(){}
+
+NeutralPlayerStrategy::NeutralPlayerStrategy(GameEngine *game, Player* player): PlayerStrategy(game, player) {}
+
+NeutralPlayerStrategy::~NeutralPlayerStrategy() {}
+
 void HumanPlayerStrategy::issueOrder() {
 
     //use airlift cards
@@ -232,8 +244,6 @@ void HumanPlayerStrategy::issueOrder() {
 }
 
 //prompts player to advance armies to attack enemies' territories
-
-
 void HumanPlayerStrategy::toAttack() {
 	    int choice=0;
     while(choice!=2){
@@ -326,6 +336,7 @@ void HumanPlayerStrategy::toDefend(int i) {
                         cout << "Please enter a valid number!" << endl;
                     } else {
                         player->getOrders().push_back(new Deploy(player, player->getTerritories()[indexTerritory - 1], numOfArmies));
+                        *player->getArmies()-=numOfArmies;
                         validFlag = true;
                     }
                 }
