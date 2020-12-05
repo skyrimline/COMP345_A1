@@ -426,7 +426,7 @@ void AggressivePlayerStrategy::toDefend(int i) {
     switch(i){
         case 1:
             for(int i=0;i<tl.size();i++){
-                if(tl[i]->getNumberOfArmies()!=0){
+                if(*tl[i]->getNumberOfArmies()!=0){
                     checkTerritoryArmies = true;
                 }
             }//check whether the player should deploy randomly
@@ -441,17 +441,22 @@ void AggressivePlayerStrategy::toDefend(int i) {
             if(checkTerritoryArmies){
                 int randNum=rand()%(tlHaveEnemy.size()+1);
                 player->getOrders().push_back(new Deploy(player,tlHaveEnemy[randNum],*player->getArmies()));
+                *player->getArmies()=0;
             }//random deploy
             else{
                 for(int i=1;i<tl.size();i++){
-                    if(tl[i]->getNumberOfArmies()>tl[priority]->getNumberOfArmies()){
+                    if(*tl[i]->getNumberOfArmies()>*tl[priority]->getNumberOfArmies()){
                         priority = i;
                     }
                 }
                 player->getOrders().push_back(new Deploy(player,tl[priority],*player->getArmies()));
+                *player->getArmies()=0;
             }//priority deploy
+            break;
+
         case 2:
             cout<<"Since "+player->getName()+" is aggressive, he will not defend at all."<<endl;
+            break;
     }
 }
 
@@ -469,7 +474,7 @@ void AggressivePlayerStrategy::toAttack() {
     }
 
     for(int i=1;i<tl.size();i++){
-        if(tl[i]->getNumberOfArmies()>tl[priority]->getNumberOfArmies()){
+        if(*tl[i]->getNumberOfArmies()>*tl[priority]->getNumberOfArmies()){
             priority = i;
         }
     }
@@ -486,7 +491,6 @@ void AggressivePlayerStrategy::issueOrder() {
 
 void BenevolentPlayerStrategy::toAttack() {
     cout << "Benevolent player doesn't attack" << endl;
-
 }
 
 void BenevolentPlayerStrategy::toDefend(int i) {
@@ -499,26 +503,27 @@ void BenevolentPlayerStrategy::toDefend(int i) {
             while (*player->getArmies() != 0) {
 
                 //Find the weakest territory to add armies to it
-                int lowestNumberOfArmies = 100000; //random high number to initialize before checking the lowest number of armies within territories
+                int lowestNumberOfArmies = *player->getTerritories()[0]->getNumberOfArmies(); //random high number to initialize before checking the lowest number of armies within territories
                 int weakestTerritoryIndex = 0;
-                for (int i = 0; i < player->getTerritories().size(); i++)
+                for (int i = 1; i < player->getTerritories().size(); i++)
                 {
-                    if (player->getTerritories()[i]->getNumberOfArmies() < player->getTerritories()[lowestNumberOfArmies]->getNumberOfArmies())
+                    if (*player->getTerritories()[i]->getNumberOfArmies() < lowestNumberOfArmies)
                     {
+                        lowestNumberOfArmies=*player->getTerritories()[i]->getNumberOfArmies();
                         weakestTerritoryIndex = i;
                     }
 
                 }
-
+                cout<<player->getTerritories()[weakestTerritoryIndex]->getName()<<endl;
                 if (*player->getArmies() > 5) {
                     player->getOrders().push_back(new Deploy(player, player->getTerritories()[weakestTerritoryIndex], 5));
+                    *player->getArmies()-=5;
                 }
                 else
                 {
                     player->getOrders().push_back(new Deploy(player, player->getTerritories()[weakestTerritoryIndex], *player->getArmies()));
+                    *player->getArmies()-=5;
                 }
-
-
             }
             break;
 
@@ -533,7 +538,7 @@ void BenevolentPlayerStrategy::toDefend(int i) {
                 int weakestTerritoryIndex = 0;
                 for (int i = 0; i < player->getTerritories().size(); i++)
                 {
-                    if (player->getTerritories()[i]->getNumberOfArmies() < player->getTerritories()[weakestTerritoryIndex]->getNumberOfArmies())
+                    if (*player->getTerritories()[i]->getNumberOfArmies() < *player->getTerritories()[weakestTerritoryIndex]->getNumberOfArmies())
                     {
                         weakestTerritoryIndex = i;
                     }
@@ -544,14 +549,14 @@ void BenevolentPlayerStrategy::toDefend(int i) {
                 int strongestTerritoryIndex = 0;
                 for (int i = 0; i < player->getTerritories().size(); i++)
                 {
-                    if (player->getTerritories()[i]->getNumberOfArmies() > player->getTerritories()[strongestTerritoryIndex]->getNumberOfArmies())
+                    if (*player->getTerritories()[i]->getNumberOfArmies() > *player->getTerritories()[strongestTerritoryIndex]->getNumberOfArmies())
                     {
                         strongestTerritoryIndex = i;
                     }
                 }
 
                 //If the difference between the strongest and weakest is too much, advance a few army units from the strongest to the weakest
-                if ((player->getTerritories()[strongestTerritoryIndex]->getNumberOfArmies() - player->getTerritories()[weakestTerritoryIndex]->getNumberOfArmies()) > 5)
+                if ((*player->getTerritories()[strongestTerritoryIndex]->getNumberOfArmies() - *player->getTerritories()[weakestTerritoryIndex]->getNumberOfArmies()) > 5)
                 {
                     player->getOrders().push_back(new Advance(player, player->getTerritories()[strongestTerritoryIndex], player->getTerritories()[weakestTerritoryIndex], 3));
                 }
@@ -566,6 +571,5 @@ void BenevolentPlayerStrategy::toDefend(int i) {
 }
 
 void BenevolentPlayerStrategy::issueOrder() {
-    player->toDefend(1);
-    player->toDefend(2);
+    cout << "Benevolent player doesn't use cards." << endl;
 }
