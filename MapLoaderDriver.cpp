@@ -14,7 +14,7 @@ int main() {
 
 	ConquestFileReader *cfReader = new ConquestFileReader();
 	ConquestFileReaderAdapter *adapter = new ConquestFileReaderAdapter(*cfReader);
-	MapLoader Loader2 = new ConquestFileReaderAdapter(*cfReader);
+	MapLoader* Loader2 = new ConquestFileReaderAdapter(*cfReader);
 
 	return 0;
 }
