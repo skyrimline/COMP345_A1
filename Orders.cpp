@@ -180,46 +180,47 @@ bool Advance::validate()
 
 void Advance::execute()
 {
-	if (validate())
-	{
-		if (p->isOwner(target))
-		{
-			cout <<p->getName()<< " has advanced "<< *numOfArmies <<" armies from "<<source->getName()<<" to " << target->getName()<<"."<< endl;
-			*source->getNumberOfArmies() -= *numOfArmies;
-			*target->getNumberOfArmies() += *numOfArmies;
-		}
-		else
-		{
-            cout <<p->getName()<< " is attacking "<<target->getName()<<" from "<<source->getName()<<" with "<< *numOfArmies <<" armies!" << endl;
-			*source->getNumberOfArmies() -= *numOfArmies;
-			int attackingForce = *numOfArmies;
-				for (int i = 0; i < *numOfArmies; i++)
-				{
-					int attack_chance, defend_chance;
-					attack_chance = rand() % 100 + 1;
-					defend_chance = rand() % 100 + 1;
-					if (attack_chance <= 60)
-						*target->getNumberOfArmies() -= 1;
-					if (defend_chance <= 70)
-						attackingForce -= 1;
-					
-				}
-				if (target->getNumberOfArmies() == 0)
-				{
-					p->addTerritory(target);
-					*target->getNumberOfArmies() += attackingForce;
-					Card* newCard=p->getHand()->getDeck()->draw();
-					p->getHand()->getCardsVector().push_back(newCard);
-					cout<<p->getName()<< " has conquered "<<target->getName()<<" and get a new card" << endl;
-					cout<<newCard;
-				}
-				else {
-				    cout<<p->getName()<<" has lost the battle."<<endl;
-                }
-			}
-			
-		}
-	}
+//	if (validate())
+//	{
+//		if (p->isOwner(target))
+//		{
+//			cout <<p->getName()<< " has advanced "<< *numOfArmies <<" armies from "<<source->getName()<<" to " << target->getName()<<"."<< endl;
+//			*source->getNumberOfArmies() -= *numOfArmies;
+//			*target->getNumberOfArmies() += *numOfArmies;
+//		}
+//		else
+//		{
+//            cout <<p->getName()<< " is attacking "<<target->getName()<<" from "<<source->getName()<<" with "<< *numOfArmies <<" armies!" << endl;
+//			*source->getNumberOfArmies() -= *numOfArmies;
+//			int attackingForce = *numOfArmies;
+//            for (int i = 0; i < *numOfArmies; i++)
+//            {
+//                int attack_chance, defend_chance;
+//                attack_chance = rand() % 100 + 1;
+//                defend_chance = rand() % 100 + 1;
+//                if (attack_chance <= 60)
+//                    *target->getNumberOfArmies() -= 1;
+//                if (defend_chance <= 70)
+//                    attackingForce -= 1;
+//
+//            }
+//            if (target->getNumberOfArmies() == 0)
+//            {
+//                p->addTerritory(target);
+//                *target->getNumberOfArmies() += attackingForce;
+//                Card* newCard=p->getHand()->getDeck()->draw();
+//                p->getHand()->getCardsVector().push_back(newCard);
+//                cout<<p->getName()<< " has conquered "<<target->getName()<<" and get a new card" << endl;
+//                cout<<newCard;
+//            }
+//            else {
+//                cout<<p->getName()<<" has lost the battle."<<endl;
+//                }
+//		}
+//
+//	}
+    cout<<"Advance!"<<endl;
+}
 
 Territory *Advance::getSource()  {
     return source;
@@ -271,14 +272,15 @@ bool Bomb::validate()
 
 void Bomb::execute()
 {
-	if (validate())
-	{
-		int* num = target->getNumberOfArmies();
-		target->setNumberOfArmies(*num / 2);
-		cout << "You have bombed an enemy's territory, half of the defensive armies are lost." << endl;
-	}
-	
+//	if (validate())
+//	{
+//		int* num = target->getNumberOfArmies();
+//		target->setNumberOfArmies(*num / 2);
+//		cout << "You have bombed an enemy's territory, half of the defensive armies are lost." << endl;
+//	}
+    cout<<"Bomb!"<<endl;
 }
+
 void Bomb::sticker()
 {
 	cout << "Bomb";
@@ -324,14 +326,16 @@ bool Blockade::validate()
 
 void Blockade::execute()
 {
-	if (validate())
-	{	
-		int* num = t->getNumberOfArmies();
-		t->setNumberOfArmies(*num * 2);
-		t->setNeutral();
-		cout << "You have blockaded this territory." << endl;
-	}
+//	if (validate())
+//	{
+//		int* num = t->getNumberOfArmies();
+//		t->setNumberOfArmies(*num * 2);
+//		t->setNeutral();
+//		cout << "You have blockaded this territory." << endl;
+//	}
+    cout<<"Blockade!"<<endl;
 }
+
 void Blockade::sticker()
 {
 	cout << "Blockade";
@@ -380,42 +384,43 @@ bool Airlift::validate()
 
 void Airlift::execute()
 {
-	if (validate())
-	{
-        if (p->isOwner(target))
-        {
-            cout << "You have airlifted army to a friendly territory." << endl;
-            *source->getNumberOfArmies() -= *numOfArmies;
-            *target->getNumberOfArmies() += *numOfArmies;
-        }
-        else
-        {
-            cout << "You are attacking another territory!" << endl;
-            *source->getNumberOfArmies() -= *numOfArmies;
-            int attackingForce = *numOfArmies;
-            for (int i = 0; i < *numOfArmies; i++)
-            {
-                int attack_chance, defend_chance;
-                attack_chance = rand() % 100 + 1;
-                defend_chance = rand() % 100 + 1;
-                if (attack_chance <= 60)
-                    *target->getNumberOfArmies() -= 1;
-                if (defend_chance <= 70)
-                    attackingForce -= 1;
-            }
-            if (target->getNumberOfArmies() == 0)
-            {
-                p->addTerritory(target);
-                *target->getNumberOfArmies() += attackingForce;
-                p->getHand()->getCardsVector().push_back(p->getHand()->getDeck()->draw());
-                cout << "You have conquered an enemy's territory and get a new card" << endl;
-            }
-            else {
-                cout<<"You have lost the battle."<<endl;
-            }
-        }
-
-	}
+//	if (validate())
+//	{
+//        if (p->isOwner(target))
+//        {
+//            cout << "You have airlifted army to a friendly territory." << endl;
+//            *source->getNumberOfArmies() -= *numOfArmies;
+//            *target->getNumberOfArmies() += *numOfArmies;
+//        }
+//        else
+//        {
+//            cout << "You are attacking another territory!" << endl;
+//            *source->getNumberOfArmies() -= *numOfArmies;
+//            int attackingForce = *numOfArmies;
+//            for (int i = 0; i < *numOfArmies; i++)
+//            {
+//                int attack_chance, defend_chance;
+//                attack_chance = rand() % 100 + 1;
+//                defend_chance = rand() % 100 + 1;
+//                if (attack_chance <= 60)
+//                    *target->getNumberOfArmies() -= 1;
+//                if (defend_chance <= 70)
+//                    attackingForce -= 1;
+//            }
+//            if (target->getNumberOfArmies() == 0)
+//            {
+//                p->addTerritory(target);
+//                *target->getNumberOfArmies() += attackingForce;
+//                p->getHand()->getCardsVector().push_back(p->getHand()->getDeck()->draw());
+//                cout << "You have conquered an enemy's territory and get a new card" << endl;
+//            }
+//            else {
+//                cout<<"You have lost the battle."<<endl;
+//            }
+//        }
+//
+//	}
+    cout<<"Airlift!"<<endl;
 }
 
 void Airlift::sticker()
@@ -472,9 +477,9 @@ bool Negotiate::validate()
 
 void Negotiate::execute()
 {
-	if (validate())
-	{
-		cout << "Player has started negotiation, and all attacks have been removed." << endl;
+//	if (validate())
+//	{
+//		cout << "Player has started negotiation, and all attacks have been removed." << endl;
 //		for(int i=0;i<p1->getOrders().size();i++){
 //		    if(p1->getOrders()[i]->getType()=="advance"){
 //		        Advance* advance=dynamic_cast<Advance*>(p1->getOrders()[i]);
@@ -503,7 +508,8 @@ void Negotiate::execute()
 //                }
 //            }
 //        }
-	}
+//	}
+    cout<<"Negotiate!"<<endl;
 }
 
 void Negotiate::sticker()

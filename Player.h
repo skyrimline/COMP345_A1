@@ -39,6 +39,7 @@ public:
     Hand* getHand();
     void setHand(Hand* hand);
     void clearOrders();
+    void addOrder(Order* order);
     ~Player();
 //    vector<Territory *> toAttack(Territory* source);
 //    vector<Territory *> toDefend();

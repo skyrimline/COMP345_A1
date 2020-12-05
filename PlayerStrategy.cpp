@@ -97,7 +97,7 @@ void HumanPlayerStrategy::issueOrder() {
                                 cout << "Please enter a valid number!" << endl;
                             }
                         }
-                        player->getOrders().push_back(new Airlift(player, source, target, numOfArmies));
+                        player->addOrder(new Airlift(player, source, target, numOfArmies));
                         airlift->play();
                         airlift = player->getHand()->firstAirlift();
                         break;
@@ -140,7 +140,7 @@ void HumanPlayerStrategy::issueOrder() {
                                 cout << "Please enter a valid number!" << endl;
                             }
                         }
-                        player->getOrders().push_back(new Blockade(player, player->getTerritories()[choice - 1]));
+                        player->addOrder(new Blockade(player, player->getTerritories()[choice - 1]));
                         blockade->play();
                         blockade = player->getHand()->firstBlockade();
                         break;
@@ -191,7 +191,7 @@ void HumanPlayerStrategy::issueOrder() {
                                 target = game->getMap()->getTerritories()[choice1 - 1];
                             }
                         }
-                        player->getOrders().push_back(new Bomb(player, target));
+                        player->addOrder(new Bomb(player, target));
                         bomb->play();
                     }
                     break;
@@ -227,7 +227,7 @@ void HumanPlayerStrategy::issueOrder() {
                                 cout << "Please enter a valid number!" << endl;
                             }
                         }
-                        player->getOrders().push_back(new Negotiate(player, game->getPlayers()[choice1 - 1]));
+                        player->addOrder(new Negotiate(player, game->getPlayers()[choice1 - 1]));
                         diplomacy->play();
                     }
                     break;
@@ -293,7 +293,7 @@ void HumanPlayerStrategy::toAttack() {
                     cout << "Please enter a valid number!" << endl;
                 }
             }
-            player->getOrders().push_back(new Advance(player, source, target, numOfArmies));
+            player->addOrder(new Advance(player, source, target, numOfArmies));
         }
         else if(choice==2){
             cout<<"Got it!"<<endl;
@@ -335,7 +335,7 @@ void HumanPlayerStrategy::toDefend(int i) {
                     if (numOfArmies > *player->getArmies() || numOfArmies < 0) {
                         cout << "Please enter a valid number!" << endl;
                     } else {
-                        player->getOrders().push_back(new Deploy(player, player->getTerritories()[indexTerritory - 1], numOfArmies));
+                        player->addOrder(new Deploy(player, player->getTerritories()[indexTerritory - 1], numOfArmies));
                         *player->getArmies()-=numOfArmies;
                         validFlag = true;
                     }
@@ -393,7 +393,7 @@ void HumanPlayerStrategy::toDefend(int i) {
                             cout << "Please enter a valid number!" << endl;
                         }
                     }
-                    player->getOrders().push_back(new Advance(player, source, target, numOfArmies));
+                    player->addOrder(new Advance(player, source, target, numOfArmies));
                 }
                 else if(choice==2){
                     cout<<"Got it!"<<endl;
@@ -420,27 +420,28 @@ void NeutralPlayerStrategy::toDefend(int i) {
 
 void AggressivePlayerStrategy::toDefend(int i) {
     int priority = 0;
-    bool checkTerritoryArmies = false;
+    bool checkTerritoryArmies = true;
     vector<Territory*> tl = player->getTerritories();
     vector<Territory*> tlHaveEnemy;
     switch(i){
         case 1:
             for(int i=0;i<tl.size();i++){
                 if(*tl[i]->getNumberOfArmies()!=0){
-                    checkTerritoryArmies = true;
+                    checkTerritoryArmies = false;
+                    break;
                 }
             }//check whether the player should deploy randomly
 
-            for(int i;i<tl.size();i++){
+            for(int i=0;i<tl.size();i++){
                 vector<Territory*> temp = tl[i]->getEnemyNeighbours();
                 if(temp.size()!=0){
                     tlHaveEnemy.push_back(tl[i]);
                 }
-            }
+            }//find the territory that has enemy territory
 
             if(checkTerritoryArmies){
-                int randNum=rand()%(tlHaveEnemy.size()+1);
-                player->getOrders().push_back(new Deploy(player,tlHaveEnemy[randNum],*player->getArmies()));
+                int randNum=rand() % tlHaveEnemy.size();
+                player->addOrder(new Deploy(player,tlHaveEnemy[randNum],*player->getArmies()));
                 *player->getArmies()=0;
             }//random deploy
             else{
@@ -449,7 +450,7 @@ void AggressivePlayerStrategy::toDefend(int i) {
                         priority = i;
                     }
                 }
-                player->getOrders().push_back(new Deploy(player,tl[priority],*player->getArmies()));
+                player->addOrder(new Deploy(player,tl[priority],*player->getArmies()));
                 *player->getArmies()=0;
             }//priority deploy
             break;
@@ -482,7 +483,7 @@ void AggressivePlayerStrategy::toAttack() {
     //start to attack
     target = tl[priority]->getEnemyNeighbours();
     int randomTarget = rand()%(target.size()+1);
-    player->getOrders().push_back(new Advance(player,tl[priority],target[randomTarget],*tl[priority]->getNumberOfArmies()));
+    player->addOrder(new Advance(player,tl[priority],target[randomTarget],*tl[priority]->getNumberOfArmies()));
 }
 
 void AggressivePlayerStrategy::issueOrder() {
@@ -498,75 +499,70 @@ void BenevolentPlayerStrategy::toDefend(int i) {
     switch (i) {
 
         //deploy armies in reinforcement  pool
-        case 1:
+        case 1: {
             //cout << "You have " << *player->getArmies() << " spare armies in total." << endl;
-            while (*player->getArmies() != 0) {
-
-                //Find the weakest territory to add armies to it
-                int lowestNumberOfArmies = *player->getTerritories()[0]->getNumberOfArmies(); //random high number to initialize before checking the lowest number of armies within territories
-                int weakestTerritoryIndex = 0;
-                for (int i = 1; i < player->getTerritories().size(); i++)
-                {
-                    if (*player->getTerritories()[i]->getNumberOfArmies() < lowestNumberOfArmies)
-                    {
-                        lowestNumberOfArmies=*player->getTerritories()[i]->getNumberOfArmies();
-                        weakestTerritoryIndex = i;
+            int armies = *player->getArmies();
+            //if there are territories that has no armies, put armies in it
+            for (int i = 0; i < player->getTerritories().size(); i++) {
+                if (armies == 0) {
+                    break;
+                } else if (*player->getTerritories()[i]->getNumberOfArmies() == 0) {
+                    if (armies > 5) {
+                        player->addOrder(new Deploy(player, player->getTerritories()[i], 5));
+                        *player->getArmies() -= 5;
+                        armies -= 5;
+                    } else {
+                        player->addOrder(new Deploy(player, player->getTerritories()[i], armies));
+                        *player->getArmies() = 0;
+                        armies = 0;
                     }
-
-                }
-                cout<<player->getTerritories()[weakestTerritoryIndex]->getName()<<endl;
-                if (*player->getArmies() > 5) {
-                    player->getOrders().push_back(new Deploy(player, player->getTerritories()[weakestTerritoryIndex], 5));
-                    *player->getArmies()-=5;
-                }
-                else
-                {
-                    player->getOrders().push_back(new Deploy(player, player->getTerritories()[weakestTerritoryIndex], *player->getArmies()));
-                    *player->getArmies()-=5;
                 }
             }
-            break;
-
-            //advance armies to defend territories
-        case 2:
-
-            bool keepMovingArmies = true;
-
-            while (keepMovingArmies) {
-
-                //Find the weakest territory to add armies to it
+            //if there are armies left, find the weakest and add all left armies
+            //Find the weakest territory to add armies to it
+            if(armies!=0) {
+                int lowestNumberOfArmies = *player->getTerritories()[0]->getNumberOfArmies();
                 int weakestTerritoryIndex = 0;
-                for (int i = 0; i < player->getTerritories().size(); i++)
-                {
-                    if (*player->getTerritories()[i]->getNumberOfArmies() < *player->getTerritories()[weakestTerritoryIndex]->getNumberOfArmies())
-                    {
+                for (int i = 1; i < player->getTerritories().size(); i++) {
+                    if (*player->getTerritories()[i]->getNumberOfArmies() < lowestNumberOfArmies) {
+                        lowestNumberOfArmies = *player->getTerritories()[i]->getNumberOfArmies();
                         weakestTerritoryIndex = i;
                     }
-
                 }
+                player->addOrder(new Deploy(player, player->getTerritories()[weakestTerritoryIndex], armies));
+                *player->getArmies() = 0;
+                armies = 0;
+            }
+            break;
+        }
 
+        //advance armies to defend territories
+        case 2: {
+            bool keepMovingArmies = true;
+            while (keepMovingArmies) {
+                //Find the weakest territory to add armies to it
+                int weakestTerritoryIndex = 0;
+                for (int i = 1; i < player->getTerritories().size(); i++) {
+                    if (*player->getTerritories()[i]->getNumberOfArmies() < *player->getTerritories()[weakestTerritoryIndex]->getNumberOfArmies()) {
+                        weakestTerritoryIndex = i;
+                    }
+                }
                 //Find the strongest territory
                 int strongestTerritoryIndex = 0;
-                for (int i = 0; i < player->getTerritories().size(); i++)
-                {
-                    if (*player->getTerritories()[i]->getNumberOfArmies() > *player->getTerritories()[strongestTerritoryIndex]->getNumberOfArmies())
-                    {
+                for (int i = 1; i < player->getTerritories().size(); i++) {
+                    if (*player->getTerritories()[i]->getNumberOfArmies() > *player->getTerritories()[strongestTerritoryIndex]->getNumberOfArmies()) {
                         strongestTerritoryIndex = i;
                     }
                 }
-
                 //If the difference between the strongest and weakest is too much, advance a few army units from the strongest to the weakest
-                if ((*player->getTerritories()[strongestTerritoryIndex]->getNumberOfArmies() - *player->getTerritories()[weakestTerritoryIndex]->getNumberOfArmies()) > 5)
-                {
-                    player->getOrders().push_back(new Advance(player, player->getTerritories()[strongestTerritoryIndex], player->getTerritories()[weakestTerritoryIndex], 3));
-                }
-                else {
+                if ((*player->getTerritories()[strongestTerritoryIndex]->getNumberOfArmies() - *player->getTerritories()[weakestTerritoryIndex]->getNumberOfArmies()) > 5) {
+                    player->addOrder(new Advance(player, player->getTerritories()[strongestTerritoryIndex],player->getTerritories()[weakestTerritoryIndex], 3));
+                } else {
                     keepMovingArmies = false; //if all the territories have around the same number of armies, stop moving armies
                 }
-
-
             }
             break;
+        }
     }
 }
 

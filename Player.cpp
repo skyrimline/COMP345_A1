@@ -129,6 +129,10 @@ void Player::clearOrders() {
     orders.erase(orders.begin(),orders.end());
 }
 
+void Player::addOrder(Order* order) {
+    orders.push_back(order);
+}
+
 //vector<Territory *> Player::toAttack(Territory* source)
 //{
 //    vector<Territory *> terrAttack;
